@@ -23,14 +23,17 @@ public abstract class MixinMinecraft {
     @Shadow
     public LocalPlayer player;
 
+    @Shadow
+    public MultiPlayerGameMode gameMode;
+
     @Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
     public void onAttack(CallbackInfoReturnable<Boolean> cir) {
-        if (new PlayerInputEvent.Attack(hitResult).post()) cir.setReturnValue(true);
+        if (!player.isHandsBusy() && new PlayerInputEvent.Attack(hitResult).post()) cir.setReturnValue(true);
     }
 
     @Inject(method = "startUseItem", at = @At("HEAD"), cancellable = true)
     public void onUseItem(CallbackInfo ci) {
-        if (player != null && new PlayerInputEvent.Use(hitResult, player.getYRot(), player.getXRot()).post()) ci.cancel();
+        if (player != null && !gameMode.isDestroying() && !player.isHandsBusy() && new PlayerInputEvent.Use(hitResult, player.getYRot(), player.getXRot()).post()) ci.cancel();
     }
 
 
