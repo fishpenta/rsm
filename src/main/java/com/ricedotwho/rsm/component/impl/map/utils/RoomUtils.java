@@ -79,7 +79,7 @@ public class RoomUtils implements Accessor {
             BlockState state = chunk.getBlockState(mutable);
             if (!state.isAir()) return state.getBlock().equals(Blocks.GOLD_BLOCK) ? y - 1 : y;
         }
-        RSM.getLogger().error("Failed to find height for x: {}, z: {}", x, z);
+//        RSM.getLogger().error("Failed to find height for x: {}, z: {}", x, z); //FUCK YOU LOGGER
         return -1;
     }
 
