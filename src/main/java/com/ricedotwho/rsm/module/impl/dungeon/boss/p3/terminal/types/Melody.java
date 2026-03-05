@@ -96,7 +96,7 @@ public class Melody extends Term {
     }
 
     @Override
-    public void render(float x, float y, float width, float height, float gap) {
+    public void render(float x, float y, float gap) {
         for (int i = 0; i < getSlotCount(); i++) {
             int col = i % 9;
             int row = i / 9;

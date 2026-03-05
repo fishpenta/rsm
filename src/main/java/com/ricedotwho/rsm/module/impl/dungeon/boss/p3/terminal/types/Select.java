@@ -80,7 +80,7 @@ public class Select extends Term {
     }
 
     @Override
-    public void render(float x, float y, float width, float height, float gap) {
+    public void render(float x, float y, float gap) {
         for (int i = 0; i < getSlotCount(); i++) {
             TermSol sol = getBySlot(i);
             if (sol == null) continue;

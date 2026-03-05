@@ -246,7 +246,7 @@ public abstract class Term implements Accessor {
         float screenHeight = w.getHeight() / scale;
 
         float gap = 32 + TerminalSolver.getGap().getValue().floatValue();
-        float width = 9 * gap;
+        float width = 9 * gap   ;
         float height = this.getSlotCount() / 9f * gap;
 
         float offsetX = screenWidth / 2f - width / 2f + 1f;
@@ -268,7 +268,7 @@ public abstract class Term implements Accessor {
                     NVGUtils.JOSEFIN);
         }
 
-        this.render(offsetX, offsetY, width, height, gap);
+        this.render(offsetX, offsetY, gap);
     }
 
     public void setClicked() {
@@ -281,7 +281,7 @@ public abstract class Term implements Accessor {
 
     public abstract boolean shouldRender();
 
-    public abstract void render(float x, float y, float width, float height, float gap);
+    public abstract void render(float x, float y, float gap);
 
     public abstract TerminalType getType();
 
