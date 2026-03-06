@@ -51,6 +51,7 @@ public class ClickGUI extends Module {
     private final BooleanSetting truePlayerModifier = new BooleanSetting("True Modifier", true);
     private final BooleanSetting devOverride = new BooleanSetting("Override", false);
     private final BooleanSetting devInfo = new BooleanSetting("Info", false);
+    private final BooleanSetting forceHypixel = new BooleanSetting("Force Hypixel", false);
     private final BooleanSetting forceSkyBlock = new BooleanSetting("Force SkyBlock", false);
 
     private final ButtonSetting editGui = new ButtonSetting("Edit Gui" , "Edit", () -> {
@@ -68,7 +69,7 @@ public class ClickGUI extends Module {
                 theme,
                 devGroup
         );
-        devGroup.add(forceDev, truePlayerModifier, devOverride, devInfo, forceSkyBlock);
+        devGroup.add(forceDev, truePlayerModifier, devOverride, devInfo, forceHypixel, forceSkyBlock);
         theme.add(background, selectedBackground, line, name1, name2, name3, highlight, pipe, panel, panelLines, text, unselectedText, selectedText, selected, groupFill, groupOutline, scrollBar, enabledColour, enabledText);
     }
 

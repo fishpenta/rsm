@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 
 @Getter
 public class Location extends ModComponent {
-    @Getter
     private static boolean isHypixel = false;
     @Getter
     private static boolean inSkyblock = false;
@@ -40,7 +39,7 @@ public class Location extends ModComponent {
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             String ip = handler.getConnection().getLoggableAddress(true);
-            isHypixel = ip.contains("hypixel.") || ip.equals("local");
+            isHypixel = ip.contains("hypixel") || ip.equals("local");
         });
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
@@ -55,6 +54,10 @@ public class Location extends ModComponent {
         area = Island.Unknown;
         kuudraTier = Floor.None;
         joinSent = false;
+    }
+
+    public boolean isHypixel() {
+        return isHypixel || RSM.getModule(ClickGUI.class).getForceSkyBlock().getValue();
     }
 
     public static void setArea(Island island) {
@@ -73,7 +76,7 @@ public class Location extends ModComponent {
 
     @SubscribeEvent
     public void onHyEvent(PacketEvent.Receive event) {
-        if (mc.isSingleplayer() || isHypixel || !(event.getPacket() instanceof ClientboundCustomPayloadPacket(
+        if (mc.isSingleplayer() || isHypixel() || !(event.getPacket() instanceof ClientboundCustomPayloadPacket(
                 net.minecraft.network.protocol.common.custom.CustomPacketPayload payload
         )) || !payload.type().equals(BrandPayload.TYPE)) return;
         BrandPayload brandPayload = (BrandPayload) payload;
@@ -151,7 +154,7 @@ public class Location extends ModComponent {
 
     @SubscribeEvent
     public void onScoreboardObjective(PacketEvent.Receive event) {
-        if(!(event.getPacket() instanceof ClientboundSetObjectivePacket packet) || !isHypixel) return;
+        if(!(event.getPacket() instanceof ClientboundSetObjectivePacket packet) || !isHypixel()) return;
         if(ChatFormatting.stripFormatting(packet.getDisplayName().getString()).contains("SKYBLOCK")) {
             inSkyblock = true;
         }
