@@ -43,6 +43,21 @@ public class DragSetting extends Setting implements Accessor {
         this.setScale(new Vector2d(scaleX, scaleY));
     }
 
+    @Override
+    public void saveToJson(JsonObject obj) {
+        obj.addProperty("name", this.getName());
+        obj.addProperty("type", this.getType());
+        obj.addProperty("x", this.getPosition().x);
+        obj.addProperty("y", this.getPosition().y);
+        obj.addProperty("scaleX", this.getScale().x);
+        obj.addProperty("scaleY", this.getScale().y);
+    }
+
+    @Override
+    public String getType() {
+        return "drag";
+    }
+
     public void renderScaled(GuiGraphics gfx, Runnable renderer, float contentWidth, float contentHeight) {
         if (mc.player == null || mc.level == null) return;
         float scaleX = (float) (scale.x / contentWidth);

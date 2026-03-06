@@ -50,7 +50,7 @@ public class TerminalSolver extends Module {
     @Getter private static final BooleanSetting canClick = new BooleanSetting("Can Click", false);
     @Getter private static final NumberSetting timeout = new NumberSetting("Timeout", 0, 1000, 500, 50);
 
-    private final NumberSetting forcedFirstClick = new NumberSetting("Forced Firstclick", 0, 500, 400, 10);
+    @Getter private static final NumberSetting forcedFirstClick = new NumberSetting("Forced Firstclick", 0, 500, 400, 10);
 
     @Getter private static final BooleanSetting terminalTime = new BooleanSetting("Send terminal time", false);
 
@@ -90,8 +90,7 @@ public class TerminalSolver extends Module {
     @Getter private static final ColourSetting melodyClay = new ColourSetting("Mel Clay", new Colour(255, 0, 0));
     @Getter private static final ColourSetting melodyClayCorrect = new ColourSetting("Mel Clay Correct", new Colour(255, 200, 0));
 
-    private static final File personalBestsFile = FileUtils.getSaveFileInCategory("dungeon", "terminal_personal_bests.json");
-    public static Map<TerminalType, Long> personalBests = new HashMap<>();
+    @Getter private static final SaveSetting<Map<TerminalType, Long>> personalBests = new SaveSetting<>("Personal Bests", "dungeon", "terminal_personal_bests.json", HashMap::new, new TypeToken<Map<TerminalType, Long>>(){}.getType());
 
     public TerminalSolver() {
         this.registerProperty(
@@ -117,7 +116,8 @@ public class TerminalSolver extends Module {
                 forcedFirstClick,
                 terminalTime,
                 gap,
-                terminalColours
+                terminalColours,
+                personalBests
         );
 
         terminalColours.add(
@@ -139,7 +139,14 @@ public class TerminalSolver extends Module {
                 melodyClayCorrect
         );
 
-        loadPersonalBests();
+        if (personalBests.getValue().isEmpty()) {
+            personalBests.getValue().put(TerminalType.PANES, 100_000L);
+            personalBests.getValue().put(TerminalType.RUBIX, 100_000L);
+            personalBests.getValue().put(TerminalType.ORDER, 100_000L);
+            personalBests.getValue().put(TerminalType.STARTS_WITH, 100_000L);
+            personalBests.getValue().put(TerminalType.SELECT, 100_000L);
+            personalBests.getValue().put(TerminalType.MELODY, 100_000L);
+        }
     }
 
     private boolean renderThis() {
@@ -190,31 +197,7 @@ public class TerminalSolver extends Module {
         event.setCancelled(true);
     }
 
-    public void loadPersonalBests() {
-        if(FileUtils.checkDir(personalBestsFile, new HashSet<>())) {
-            try {
-                Map<TerminalType, Long> temp;
-                try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(personalBestsFile.toPath()), StandardCharsets.UTF_8)) {
-                    Gson gson = new Gson();
-                    temp = gson.fromJson(reader, new TypeToken<Map<TerminalType, Long>>(){}.getType());
-
-                    personalBests = temp;
-                }
-            } catch (IOException | JsonSyntaxException | JsonIOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            personalBests.put(TerminalType.PANES, 100_000L);
-            personalBests.put(TerminalType.RUBIX, 100_000L);
-            personalBests.put(TerminalType.ORDER, 100_000L);
-            personalBests.put(TerminalType.STARTS_WITH, 100_000L);
-            personalBests.put(TerminalType.SELECT, 100_000L);
-            personalBests.put(TerminalType.MELODY, 100_000L);
-            savePersonalBests();
-        }
-    }
-
     public static void savePersonalBests() {
-        FileUtils.writeJson(personalBests, personalBestsFile);
+        personalBests.save();
     }
 }

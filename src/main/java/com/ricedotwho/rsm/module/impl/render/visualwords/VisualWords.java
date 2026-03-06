@@ -10,6 +10,7 @@ import com.ricedotwho.rsm.data.TerminalType;
 import com.ricedotwho.rsm.module.Module;
 import com.ricedotwho.rsm.module.api.Category;
 import com.ricedotwho.rsm.module.api.ModuleInfo;
+import com.ricedotwho.rsm.ui.clickgui.settings.impl.SaveSetting;
 import com.ricedotwho.rsm.utils.ChatUtils;
 import com.ricedotwho.rsm.utils.FileUtils;
 import lombok.Getter;
@@ -40,8 +41,6 @@ import java.util.regex.Pattern;
 @Getter
 @ModuleInfo(aliases = "Visual Words", id = "VisualWords", category = Category.RENDER)
 public class VisualWords extends Module {
-    public static ConcurrentHashMap<String, VisualWord> wordMap = new ConcurrentHashMap<>();
-    private static final File file = FileUtils.getSaveFileInCategory("render", "visual_words.json");
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
 
     private static final Gson GSON = new GsonBuilder()
@@ -56,55 +55,33 @@ public class VisualWords extends Module {
             .setPrettyPrinting()
             .create();
 
+    @Getter
+    private static final SaveSetting<ConcurrentHashMap<String, VisualWord>> data = new SaveSetting<>("Word Map", "render", "visual_words.json", ConcurrentHashMap::new, new TypeToken<ConcurrentHashMap<String, VisualWord>>(){}.getType(), GSON, false, null, null);
+
     private static VisualWords INSTANCE;
 
     public VisualWords() {
         INSTANCE = this;
-        load();
-    }
-
-    public static void load() {
-        if (FileUtils.checkDir(file, new HashSet<>())) {
-            try {
-                ConcurrentHashMap<String, VisualWord> temp;
-                try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8)) {
-                    temp = GSON.fromJson(reader, new TypeToken<ConcurrentHashMap<String, VisualWord>>(){}.getType());
-
-                    wordMap = temp;
-                }
-            } catch (IOException | JsonSyntaxException | JsonIOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public static void save() {
-        try {
-            Writer writer = new OutputStreamWriter(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8);
-            GSON.toJson(wordMap, writer);
-            writer.close();
-        } catch (IOException e) {
-            // ignored
-        }
+        registerProperty(data);
     }
 
     public static void addWord(String phrase, MutableComponent replacement) {
-        wordMap.put(phrase, new VisualWord(replacement, true));
-        save();
+        data.getValue().put(phrase, new VisualWord(replacement, true));
+        data.save();
     }
 
     public static boolean removeWord(String phrase) {
-        boolean ret = wordMap.remove(phrase) != null;
-        save();
+        boolean ret = data.getValue().remove(phrase) != null;
+        data.save();
         return ret;
     }
 
     public static String modifyString(String text) {
-        if (!INSTANCE.isEnabled() || text.isBlank() || wordMap.keySet().stream().noneMatch(text::contains)) return text;
+        if (!INSTANCE.isEnabled() || text.isBlank() || data.getValue().keySet().stream().noneMatch(text::contains)) return text;
 
         String result = text;
 
-        for (Map.Entry<String, VisualWord> entry : wordMap.entrySet()) {
+        for (Map.Entry<String, VisualWord> entry : data.getValue().entrySet()) {
             if (!entry.getValue().enabled || !result.contains(entry.getKey())) continue;
 
             result = result.replace(entry.getKey(), applyColorCodes(entry.getValue().replacement.getString()));
@@ -113,7 +90,7 @@ public class VisualWords extends Module {
     }
 
     public static Component modifyComponent(Component component) {
-        if (!INSTANCE.isEnabled() || wordMap.keySet().stream().noneMatch(s -> component.getString().contains(s))) return component;
+        if (!INSTANCE.isEnabled() || data.getValue().keySet().stream().noneMatch(s -> component.getString().contains(s))) return component;
         return rebuildComponent(component);
     }
 
@@ -124,10 +101,10 @@ public class VisualWords extends Module {
         if (contents instanceof PlainTextContents plain) {
             String originalText = plain.text();
 
-            Optional<String> target = wordMap.keySet().stream().filter(originalText::contains).findFirst();
+            Optional<String> target = data.getValue().keySet().stream().filter(originalText::contains).findFirst();
 
             if (target.isPresent()) {
-                newComp = injectReplacement(originalText, target.get(), wordMap.get(target.get()).replacement, comp.getStyle());
+                newComp = injectReplacement(originalText, target.get(), data.getValue().get(target.get()).replacement, comp.getStyle());
             } else {
                 newComp = comp.copy();
                 newComp.getSiblings().clear();
@@ -186,7 +163,7 @@ public class VisualWords extends Module {
             return true;
         });
 
-        boolean containsAny = wordMap.keySet().stream().anyMatch(sb.toString()::contains);
+        boolean containsAny = data.getValue().keySet().stream().anyMatch(sb.toString()::contains);
 
         if (!containsAny) {
             return seq;

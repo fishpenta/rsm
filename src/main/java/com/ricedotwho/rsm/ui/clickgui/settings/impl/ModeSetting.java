@@ -1,5 +1,6 @@
 package com.ricedotwho.rsm.ui.clickgui.settings.impl;
 
+import com.google.gson.JsonObject;
 import com.ricedotwho.rsm.ui.clickgui.settings.Setting;
 import lombok.Getter;
 
@@ -67,5 +68,22 @@ public class ModeSetting extends Setting<String> {
 
     public boolean is(String other) {
         return this.value.equalsIgnoreCase(other);
+    }
+
+    @Override
+    public void loadFromJson(JsonObject obj) {
+        this.setValue(obj.get("value").getAsString());
+    }
+
+    @Override
+    public void saveToJson(JsonObject obj) {
+        obj.addProperty("name", this.getName());
+        obj.addProperty("type", this.getType());
+        obj.addProperty("value", this.getValue());
+    }
+
+    @Override
+    public String getType() {
+        return "mode";
     }
 }

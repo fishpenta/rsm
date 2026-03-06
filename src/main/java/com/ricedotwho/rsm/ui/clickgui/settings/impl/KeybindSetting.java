@@ -46,4 +46,16 @@ public class KeybindSetting extends Setting<Keybind> {
         String key = keyObj == null ? "key.keyboard.unknown" : keyObj.getAsString();
         this.value.setKeyBind(InputConstants.getKey(key));
     }
+
+    @Override
+    public void saveToJson(JsonObject obj) {
+        obj.addProperty("name", this.getName());
+        obj.addProperty("type", this.getType());
+        obj.addProperty("value", this.getValue().getKeyBind().getName());
+    }
+
+    @Override
+    public String getType() {
+        return "keybind";
+    }
 }

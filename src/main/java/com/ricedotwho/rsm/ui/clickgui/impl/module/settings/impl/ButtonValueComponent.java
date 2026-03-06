@@ -11,8 +11,6 @@ import net.minecraft.client.gui.GuiGraphics;
 public class ButtonValueComponent extends ValueComponent<ButtonSetting> {
     private boolean pressed = false;
     private static ButtonValueComponent focusedComponent = null;
-    private long lastMouseTime = 0;
-    private static final long MOUSE_DEBOUNCE_TIME = 100;
 
     public ButtonValueComponent(ButtonSetting setting, ModuleBase parent) {
         super(setting, parent);
@@ -50,10 +48,6 @@ public class ButtonValueComponent extends ValueComponent<ButtonSetting> {
     public void click(double mouseX, double mouseY, int mouseButton) {
         long currentTime = System.currentTimeMillis();
 
-        if (currentTime - lastMouseTime < MOUSE_DEBOUNCE_TIME) {
-            return;
-        }
-
         if (clickConsumed || mouseButton != 0) return;
 
         float posX = getPosition().x;
@@ -72,7 +66,6 @@ public class ButtonValueComponent extends ValueComponent<ButtonSetting> {
 
             focusedComponent = this;
             pressed = true;
-            lastMouseTime = currentTime;
             consumeClick();
 
             if(setting.getAction() != null) setting.getAction().run();

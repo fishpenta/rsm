@@ -209,8 +209,11 @@ public class ColourValueComponent extends InputValueComponent<ColourSetting> {
             focusedComponent = null;
             return true;
         }
-
-        return input.keyTyped(event);
+        boolean ret = input.keyTyped(event);
+        int alpha = setting.getValue().getAlpha();
+        setting.setValue(new Colour(input.getValue()));
+        setting.getValue().setAlpha(alpha);
+        return ret;
     }
 
     @Override

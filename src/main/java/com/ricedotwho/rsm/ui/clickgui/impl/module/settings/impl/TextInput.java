@@ -74,7 +74,7 @@ public class TextInput implements Accessor {
         }
 
         String text = secure && !writing ? new String(new char[value.length()]).replace('\0', '*') : value;
-        NVGUtils.drawTextShadow(text, x, y, 12, Colour.WHITE, NVGUtils.JOSEFIN);
+        NVGUtils.drawTextShadow(text, x, y, 12, FatalityColours.TEXT, NVGUtils.JOSEFIN);
 
         if (writing) {
             float f = fontHeight / 4f;

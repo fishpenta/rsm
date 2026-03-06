@@ -34,64 +34,10 @@ public class ConfigUtils {
 
                 JsonArray arr2 = new JsonArray();
                 for (Setting<?> s2 : sub.getSettings()) {
+                    if (!s2.savesToConfig()) continue;
                     JsonObject obj = new JsonObject();
 
-                    // Types that don't save!
-                    if (s2 instanceof ButtonSetting) continue;
-
-                    obj.addProperty("name", s2.getName());
-
-                    switch (s2) {
-                        case BooleanSetting booleanSetting -> {
-                            obj.addProperty("type", "boolean");
-                            obj.addProperty("value", booleanSetting.getValue());
-                        }
-                        case NumberSetting numberSetting -> {
-                            obj.addProperty("type", "number");
-                            obj.addProperty("value", numberSetting.getValue().toPlainString());
-                        }
-                        case ModeSetting modeSetting -> {
-                            obj.addProperty("type", "mode");
-                            obj.addProperty("value", modeSetting.getValue());
-                        }
-                        case MultiBoolSetting mbs -> {
-                            obj.addProperty("type", "multibool");
-                            JsonArray boolarray = new JsonArray();
-
-                            for (String key : mbs.getValue().keySet()) {
-                                JsonObject boolobject = new JsonObject();
-                                boolobject.addProperty("name", key);
-                                boolobject.addProperty("value", mbs.getValue().get(key));
-                                boolarray.add(boolobject);
-                            }
-                            obj.add("values", boolarray);
-                        }
-                        case StringSetting stringSetting -> {
-                            obj.addProperty("type", "string");
-                            obj.addProperty("value", stringSetting.getValue());
-                        }
-                        case DragSetting dragSetting -> {
-                            obj.addProperty("type", "drag");
-                            obj.addProperty("x", dragSetting.getPosition().x);
-                            obj.addProperty("y", dragSetting.getPosition().y);
-                            obj.addProperty("scaleX", dragSetting.getScale().x);
-                            obj.addProperty("scaleY", dragSetting.getScale().y);
-                        }
-                        case KeybindSetting keybindSetting -> {
-                            obj.addProperty("type", "keybind");
-                            obj.addProperty("value", keybindSetting.getValue().getKeyBind().getName());
-                        }
-                        case ColourSetting colourSetting -> {
-                            obj.addProperty("type", "colour");
-                            obj.addProperty("hue", colourSetting.getValue().getHue());
-                            obj.addProperty("saturation", colourSetting.getValue().getSaturation());
-                            obj.addProperty("brightness", colourSetting.getValue().getBrightness());
-                            obj.addProperty("alpha", colourSetting.getValue().getAlpha());
-                            obj.addProperty("dataBit", colourSetting.getValue().getDataBitRaw());
-                        }
-                        default -> {
-                        }
-                    }
+                    s2.saveToJson(obj);
 
                     arr2.add(obj);
                 }
@@ -127,54 +73,10 @@ public class ConfigUtils {
 
             JsonArray arr2 = new JsonArray();
             for (Setting<?> s2 : sub.getSettings()) {
+                if (!s2.savesToConfig()) continue;
                 JsonObject obj = new JsonObject();
 
-                // Types that dont save!
-                if (s2 instanceof ButtonSetting) continue;
-
-                obj.addProperty("name", s2.getName());
-
-                if (s2 instanceof BooleanSetting) {
-                    obj.addProperty("type", "boolean");
-                    obj.addProperty("value", ((BooleanSetting) s2).getValue());
-                } else if (s2 instanceof NumberSetting) {
-                    obj.addProperty("type", "number");
-                    obj.addProperty("value", ((NumberSetting) s2).getValue().toPlainString());
-                } else if (s2 instanceof ModeSetting) {
-                    obj.addProperty("type", "mode");
-                    obj.addProperty("value", ((ModeSetting) s2).getValue());
-                } else if (s2 instanceof MultiBoolSetting) {
-                    obj.addProperty("type", "multibool");
-                    MultiBoolSetting mbs = (MultiBoolSetting) s2;
-                    JsonArray boolarray = new JsonArray();
-
-                    for (String key : mbs.getValue().keySet()) {
-                        JsonObject boolobject = new JsonObject();
-                        boolobject.addProperty("name", key);
-                        boolobject.addProperty("value", mbs.getValue().get(key));
-                        boolarray.add(boolobject);
-                    }
-                    obj.add("values", boolarray);
-                } else if (s2 instanceof StringSetting) {
-                    obj.addProperty("type", "string");
-                    obj.addProperty("value", ((StringSetting) s2).getValue());
-                } else if (s2 instanceof DragSetting) {
-                    obj.addProperty("type", "drag");
-                    obj.addProperty("x", ((DragSetting) s2).getPosition().x);
-                    obj.addProperty("y", ((DragSetting) s2).getPosition().y);
-                    obj.addProperty("scaleX", ((DragSetting) s2).getScale().x);
-                    obj.addProperty("scaleY", ((DragSetting) s2).getScale().y);
-                } else if (s2 instanceof KeybindSetting) {
-                    obj.addProperty("type", "keybind");
-                    obj.addProperty("value", ((KeybindSetting) s2).getValue().getKeyBind().getName());
-                } else if (s2 instanceof ColourSetting) {
-                    obj.addProperty("type", "colour");
-                    obj.addProperty("hue", ((ColourSetting) s2).getValue().getHue());
-                    obj.addProperty("saturation", ((ColourSetting) s2).getValue().getSaturation());
-                    obj.addProperty("brightness", ((ColourSetting) s2).getValue().getBrightness());
-                    obj.addProperty("alpha", ((ColourSetting) s2).getValue().getAlpha());
-                    obj.addProperty("dataBit", ((ColourSetting) s2).getValue().getDataBitRaw());
-                }
+                s2.saveToJson(obj);
 
                 arr2.add(obj);
             }
@@ -257,64 +159,24 @@ public class ConfigUtils {
                                 continue;
                             }
 
-                            switch (type) {
-                                case "boolean":
-                                    if (setting instanceof BooleanSetting setting1) {
-                                        setting1.setValue(settingObj.get("value").getAsBoolean());
-                                    }
-                                    break;
-                                case "number":
-                                    if (setting instanceof NumberSetting setting1) {
-                                        String value = settingObj.get("value").getAsString();
-                                        setting1.setValue(value);
-                                    }
-                                    break;
-                                case "mode":
-                                    if (setting instanceof ModeSetting setting1) {
-                                        setting1.setValue(settingObj.get("value").getAsString());
-                                    }
-                                    break;
-                                case "multibool":
-                                    if (setting instanceof MultiBoolSetting setting1) {
-                                        setting1.loadFromJson(settingObj);
-                                    }
-                                    break;
-                                case "string":
-                                    if (setting instanceof StringSetting setting1) {
-                                        setting1.setValue(settingObj.get("value").getAsString());
-                                    }
-                                    break;
-                                case "drag":
-                                    if (setting instanceof DragSetting setting1) {
-                                        setting1.loadFromJson(settingObj);
-                                    }
-                                    break;
-                                case "keybind":
-                                    if (setting instanceof KeybindSetting setting1) {
-                                        setting1.loadFromJson(settingObj);
-                                    }
-                                case "colour":
-                                    if (setting instanceof ColourSetting setting1) {
-                                        setting1.loadFromJson(settingObj);
-                                    }
-                                    break;
-                                default:
-                                    modified = true;
-                                    break;
-                            }
+                            setting.loadFromJson(settingObj);
+
                             setting.register();
                         } catch (Exception e) {
-                            ChatUtils.chat("Skipped malformed setting.");
+                            e.printStackTrace();
+                            ChatUtils.chat("Skipped malformed setting. (%s)", settingElement);
                             modified = true;
                         }
                     }
                 } catch (Exception e) {
-                    ChatUtils.chat("Skipped malformed group setting.");
+                    e.printStackTrace();
+                    ChatUtils.chat("Skipped malformed group setting. (%s)", groupElement);
                     modified = true;
                 }
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             ChatUtils.chat("Skipped malformed module: " + moduleName);
             modified = true;
         }

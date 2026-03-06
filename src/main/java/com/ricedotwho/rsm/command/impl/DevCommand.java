@@ -154,6 +154,12 @@ public class DevCommand extends Command {
                             jesus.jesus();
                             return 1;
                         })
+                )
+                .then(literal("dbcharges")
+                        .executes(ctx -> {
+                            ChatUtils.chat("Charges: %s", ItemUtils.getDbCharges(mc.player.getInventory().getSelectedItem()));
+                            return 1;
+                        })
                 );
     }
 }

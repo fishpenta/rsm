@@ -1,5 +1,6 @@
 package com.ricedotwho.rsm.ui.clickgui.settings.impl;
 
+import com.google.gson.JsonObject;
 import com.ricedotwho.rsm.ui.clickgui.settings.Setting;
 import lombok.Getter;
 import lombok.Setter;
@@ -72,5 +73,22 @@ public class NumberSetting extends Setting<BigDecimal> {
         return value.stripTrailingZeros()
                 .setScale(Math.min(2, Math.max(0, value.stripTrailingZeros().scale())), RoundingMode.HALF_UP)
                 .toPlainString();
+    }
+
+    @Override
+    public void loadFromJson(JsonObject obj) {
+        this.setValue(obj.get("value").getAsString());
+    }
+
+    @Override
+    public void saveToJson(JsonObject obj) {
+        obj.addProperty("name", this.getName());
+        obj.addProperty("type", this.getType());
+        obj.addProperty("value", this.getValue().toPlainString());
+    }
+
+    @Override
+    public String getType() {
+        return "number";
     }
 }

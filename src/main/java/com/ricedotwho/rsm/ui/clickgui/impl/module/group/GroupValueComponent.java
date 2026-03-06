@@ -4,7 +4,6 @@ import com.ricedotwho.rsm.RSM;
 import com.ricedotwho.rsm.module.Module;
 import com.ricedotwho.rsm.module.ModuleBase;
 import com.ricedotwho.rsm.module.SubModule;
-import com.ricedotwho.rsm.ui.clickgui.api.FatalityColours;
 import com.ricedotwho.rsm.ui.clickgui.impl.module.settings.ValueComponent;
 import com.ricedotwho.rsm.ui.clickgui.impl.module.settings.impl.*;
 import com.ricedotwho.rsm.ui.clickgui.settings.group.GroupSetting;
@@ -22,8 +21,8 @@ import java.util.List;
 
 public class GroupValueComponent implements Accessor {
     @Getter
-    private GroupSetting<?> setting;
-    private final List<ValueComponent> settings;
+    private final GroupSetting<?> setting;
+    private final List<ValueComponent<?>> settings;
     @Getter
     private final ModuleBase module;
 
@@ -39,24 +38,17 @@ public class GroupValueComponent implements Accessor {
             if (sub.getInfo().hasKeybind()) settings.add(new KeybindValueComponent(sub));
         }
         settings.addAll(getSetting().getValue().getSettings().stream()
-                .map(setting1 -> {
-                    if (setting1 instanceof BooleanSetting)
-                        return new BooleanValueComponent((BooleanSetting) setting1, parent);
-                    if (setting1 instanceof ModeSetting)
-                        return new ModeValueComponent((ModeSetting) setting1, parent);
-                    if (setting1 instanceof MultiBoolSetting)
-                        return new MultiBoolValueComponent((MultiBoolSetting) setting1, parent);
-                    if (setting1 instanceof NumberSetting)
-                        return new NumberValueComponent((NumberSetting) setting1, parent);
-                    if (setting1 instanceof StringSetting)
-                        return new StringValueComponent((StringSetting) setting1, parent);
-                    if(setting1 instanceof KeybindSetting)
-                        return new KeybindValueComponent((KeybindSetting) setting1, parent);
-                    if(setting1 instanceof ButtonSetting)
-                        return new ButtonValueComponent((ButtonSetting) setting1, parent);
-                    if(setting1 instanceof ColourSetting)
-                        return new ColourValueComponent((ColourSetting) setting1, parent);
-                    return new EmptyValueComponent(setting1, parent);
+                .map(setting1 -> switch (setting1) {
+                    case BooleanSetting booleanSetting -> new BooleanValueComponent(booleanSetting, parent);
+                    case ModeSetting modeSetting -> new ModeValueComponent(modeSetting, parent);
+                    case MultiBoolSetting multiBoolSetting -> new MultiBoolValueComponent(multiBoolSetting, parent);
+                    case NumberSetting numberSetting -> new NumberValueComponent(numberSetting, parent);
+                    case StringSetting stringSetting -> new StringValueComponent(stringSetting, parent);
+                    case KeybindSetting keybindSetting -> new KeybindValueComponent(keybindSetting, parent);
+                    case ButtonSetting buttonSetting -> new ButtonValueComponent(buttonSetting, parent);
+                    case ColourSetting colourSetting -> new ColourValueComponent(colourSetting, parent);
+                    case SaveSetting<?> saveSetting -> new SaveValueComponent(saveSetting, parent);
+                    default -> new EmptyValueComponent(setting1, parent);
                 })
                 .toList());
     }
@@ -143,7 +135,7 @@ public class GroupValueComponent implements Accessor {
         }
 
         for (ValueComponent<?> component : settings) {
-            if(component.getPosition() == null || !isSettingShown(component)) continue;
+            if (component.getPosition() == null || !isSettingShown(component)) continue;
             if (!component.isClickConsumed()) {
                 component.click(mouseX, mouseY, button);
                 if (component.isClickConsumed()) {
@@ -162,7 +154,7 @@ public class GroupValueComponent implements Accessor {
         if (expandedDropdown instanceof MultiBoolValueComponent) {
             dropdownHeight = ((MultiBoolValueComponent) expandedDropdown).getSetting().getValue().size() * 14;
         }
-        if(expandedDropdown instanceof ColourValueComponent) {
+        if (expandedDropdown instanceof ColourValueComponent) {
             dropdownHeight = 66;
         }
         return dropdownHeight;
@@ -170,12 +162,12 @@ public class GroupValueComponent implements Accessor {
 
     public void release(double mouseX, double mouseY, int button) {
         for (ValueComponent<?> component : settings) {
-            if(!isSettingShown(component)) continue;
+            if (!isSettingShown(component)) continue;
             component.release(mouseX, mouseY, button);
         }
     }
     private boolean isSettingShown(ValueComponent<?> component){
-        if(component.getSetting() == null) return true; // module toggles are null for some reason
+        if (component.getSetting() == null) return true; // module toggles are null for some reason
         return component.getSetting().getSupplier() != null && component.getSetting().getSupplier().getAsBoolean();
     }
 }

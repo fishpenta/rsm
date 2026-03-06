@@ -43,4 +43,20 @@ public class ColourSetting extends Setting<Colour> {
 
         this.setValue(new Colour(h, s, b, a, dataBit));
     }
+
+    @Override
+    public void saveToJson(JsonObject obj) {
+        obj.addProperty("name", this.getName());
+        obj.addProperty("type", this.getType());
+        obj.addProperty("hue", this.getValue().getHue());
+        obj.addProperty("saturation", this.getValue().getSaturation());
+        obj.addProperty("brightness", this.getValue().getBrightness());
+        obj.addProperty("alpha", this.getValue().getAlpha());
+        obj.addProperty("dataBit", this.getValue().getDataBitRaw());
+    }
+
+    @Override
+    public String getType() {
+        return "colour";
+    }
 }

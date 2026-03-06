@@ -446,7 +446,7 @@ public final class Colour implements Serializable, Cloneable, Comparable<Colour>
     @NotNull
     @Override
     public Colour clone() {
-        return new Colour(getRed(), getBlue(), getGreen(), getAlpha());
+        return new Colour(getRGB());
     }
 
     /**

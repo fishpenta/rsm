@@ -132,17 +132,22 @@ public class Terminals extends ModComponent {
     @SubscribeEvent
     public void onClick(PacketEvent.Send event) {
         if (event.getPacket() instanceof ServerboundContainerClickPacket && Terminals.isInTerminal()) {
+            if (current.getType() != TerminalType.MELODY && System.currentTimeMillis() - openedAt < TerminalSolver.getForcedFirstClick().getValue().longValue()) {
+                event.setCancelled(true);
+                return;
+            }
+
             clickedAt = System.currentTimeMillis();
             if (current != null) current.setClicked();
         }
     }
 
     private void updateBests(TerminalType type, long time) {
-        long best = TerminalSolver.personalBests.get(type);
+        long best = TerminalSolver.getPersonalBests().getValue().get(type);
         String termName = Utils.capitalise(type.name().replace("_", " ").toLowerCase());
 
         if (time < best) {
-            TerminalSolver.personalBests.put(type, time);
+            TerminalSolver.getPersonalBests().getValue().put(type, time);
             TerminalSolver.savePersonalBests();
 
             if (TerminalSolver.getTerminalTime().getValue()) {

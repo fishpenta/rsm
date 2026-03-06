@@ -1,5 +1,6 @@
 package com.ricedotwho.rsm.ui.clickgui.settings.impl;
 
+import com.google.gson.JsonObject;
 import com.ricedotwho.rsm.ui.clickgui.settings.Setting;
 import lombok.Getter;
 
@@ -33,5 +34,22 @@ public class StringSetting extends Setting<String> {
 
     public StringSetting(String name, String defaultValue) {
         this(name, defaultValue, null, true, false, 32);
+    }
+
+    @Override
+    public void loadFromJson(JsonObject obj) {
+        this.setValue(obj.get("value").getAsString());
+    }
+
+    @Override
+    public void saveToJson(JsonObject obj) {
+        obj.addProperty("name", this.getName());
+        obj.addProperty("type", this.getType());
+        obj.addProperty("value", this.getValue());
+    }
+
+    @Override
+    public String getType() {
+        return "string";
     }
 }

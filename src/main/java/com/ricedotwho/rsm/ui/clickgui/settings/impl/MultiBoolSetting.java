@@ -77,6 +77,26 @@ public class MultiBoolSetting extends Setting<Map<String, Boolean>> {
     }
 
     @Override
+    public void saveToJson(JsonObject obj) {
+        obj.addProperty("name", this.getName());
+        obj.addProperty("type", this.getType());
+        JsonArray boolarray = new JsonArray();
+
+        for (String key : this.getValue().keySet()) {
+            JsonObject entry = new JsonObject();
+            entry.addProperty("name", key);
+            entry.addProperty("value", this.getValue().get(key));
+            boolarray.add(entry);
+        }
+        obj.add("values", boolarray);
+    }
+
+    @Override
+    public String getType() {
+        return "multibool";
+    }
+
+    @Override
     public String toString() {
         return getValue().toString();
     }

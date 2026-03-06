@@ -11,7 +11,7 @@ import lombok.Setter;
 import java.util.function.BooleanSupplier;
 
 @Getter
-public class Setting<T> {
+public abstract class Setting<T> {
     private boolean registered = false;
     private final String name;
     private final boolean shouldSubscribe;
@@ -32,8 +32,14 @@ public class Setting<T> {
         this.shown = this.supplier.getAsBoolean();
     }
 
-    public void loadFromJson(JsonObject obj) {
+    public abstract void loadFromJson(JsonObject obj);
 
+    public abstract void saveToJson(JsonObject obj);
+
+    public abstract String getType();
+
+    public boolean savesToConfig() {
+        return true;
     }
 
     public void register() {

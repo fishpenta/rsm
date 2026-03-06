@@ -26,4 +26,10 @@ public class PacketEvent extends Event {
 			super(packet);
 		}
 	}
+
+    public static class PostReceive extends PacketEvent {
+        public PostReceive(Packet<?> packet) {
+            super(packet);
+        }
+    }
 }

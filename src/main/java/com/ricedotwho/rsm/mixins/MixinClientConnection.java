@@ -25,6 +25,14 @@ public class MixinClientConnection {
         }
     }
 
+    @Inject(
+            method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V",
+            at = @At("TAIL")
+    )
+    private void quoi$receivePacketPost(ChannelHandlerContext context, Packet<?> packet, CallbackInfo ci) {
+        new PacketEvent.PostReceive(packet).post();
+    }
+
     @Inject(method = "sendPacket", at = @At("HEAD"), cancellable = true)
         private void sendPacket(Packet<?> packet, ChannelFutureListener channelFutureListener, boolean flush, CallbackInfo ci) {
         if (new PacketEvent.Send(packet).post()) {
