@@ -42,6 +42,7 @@ public class NumberUtils {
     }
 
     public boolean isInteger(String str) {
+        if (str == null || str.isBlank()) return false;
         return str.matches("-?\\d+");
     }
 

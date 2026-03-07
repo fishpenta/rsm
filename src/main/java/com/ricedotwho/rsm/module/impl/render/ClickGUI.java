@@ -22,6 +22,7 @@ import java.util.List;
 public class ClickGUI extends Module {
     private final StringSetting commandPrefix = new StringSetting("Command Prefix", "`", null, false, false, 1);
     private final ModeSetting toggleClickType = new ModeSetting("Toggle Type", "Left", List.of("Left", "Right"));
+    @Getter private static final BooleanSetting interpolateCamera = new BooleanSetting("Interpolate Camera", true);
 
     // Theme Colours
     private final DefaultGroupSetting theme = new DefaultGroupSetting("Theme", this);
@@ -44,7 +45,7 @@ public class ClickGUI extends Module {
     private final ColourSetting scrollBar = new ColourSetting("Scroll Bar", new Colour(67, 67, 67));
     private final ColourSetting enabledColour = new ColourSetting("Enabled Colour", new Colour(255,255,255, 13));
     private final ColourSetting enabledText = new ColourSetting("Enabled Text", new Colour(230, 207, 209));
-    public static final ModeSetting FontMode = new ModeSetting("Font", "Josefin", List.of("Josefin", "Josefin Bold", "Product Sans", "SF Pro", "Nunito", "Roboto"));
+    public static final ModeSetting fontMode = new ModeSetting("Font", "Josefin", List.of("Josefin", "Josefin Bold", "Product Sans", "SF Pro", "Nunito", "Roboto"));
 
     private final DefaultGroupSetting devGroup = new DefaultGroupSetting("Dev", this);
     private final BooleanSetting forceDev = new BooleanSetting("Force Dev", false);
@@ -64,7 +65,8 @@ public class ClickGUI extends Module {
         this.registerProperty(
                 commandPrefix,
                 toggleClickType,
-                FontMode,
+                interpolateCamera,
+                fontMode,
                 editGui,
                 theme,
                 devGroup
@@ -74,7 +76,7 @@ public class ClickGUI extends Module {
     }
 
     public static Font getFont() {
-        return switch (FontMode.getValue().toUpperCase()) {
+        return switch (fontMode.getValue().toUpperCase()) {
             case "JOSEFIN" -> NVGUtils.JOSEFIN;
             case "JOSEFIN BOLD" -> NVGUtils.JOSEFIN_BOLD;
             case "PRODUCT SANS" -> NVGUtils.PRODUCT_SANS;
