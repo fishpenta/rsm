@@ -108,7 +108,7 @@ public class Dungeon extends ModComponent {
     // todo: this runs every time a ClientboundPlayerInfoUpdatePacket is received while in a dungeon, maybe it should not? Regex is probably not that great to have running often
     @SubscribeEvent
     public void onTabList(PacketEvent.Receive event) {
-        if(!(event.getPacket() instanceof ClientboundPlayerInfoUpdatePacket packet) || !Location.getArea().is(Island.Dungeon)) return;
+        if (!(event.getPacket() instanceof ClientboundPlayerInfoUpdatePacket packet) || !Location.getArea().is(Island.Dungeon)) return;
         for (ClientboundPlayerInfoUpdatePacket.Entry e : packet.entries()) {
             if (e.displayName() == null) continue;
             String text = ChatFormatting.stripFormatting(e.displayName().getString().trim());
@@ -128,7 +128,7 @@ public class Dungeon extends ModComponent {
                     level = NumberUtils.convertRomanToArabic(cl);
                 }
             }
-            Optional<AbstractClientPlayer> optional = mc.level.players().stream().filter(p -> p.getName().getString().equals(name)).findFirst();
+            Optional<AbstractClientPlayer> optional = mc.level == null ? Optional.empty() : mc.level.players().stream().filter(p -> p.getName().getString().equals(name)).findFirst();
             if (optional.isEmpty()){
                 DungeonPlayer dp = getPlayer(name);
                 if (dp != null) dp.update(clazz, level);
