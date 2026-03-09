@@ -56,8 +56,7 @@ public class DungeonPlayer implements Accessor {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        DungeonPlayer that = (DungeonPlayer) o;
+        if (!(o instanceof DungeonPlayer that)) return false;
         return Objects.equals(name, that.name);
     }
 
