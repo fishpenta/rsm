@@ -191,7 +191,7 @@ public class Ether extends Module implements CameraPositionProvider {
             canInteract = !isIgnored(mc.level.getBlockState(blockHitResult.getBlockPos()).getBlock());
         }
 
-        boolean canTp = ether.getSecond() && SbStatTracker.getStats().getMana().getCurrent() > 90 && canInteract && (Map.getCurrentRoom() == null || !Utils.equalsOneOf(Map.getCurrentRoom().getData().type(), RoomType.PUZZLE, RoomType.TRAP));
+        boolean canTp = ether.getSecond() && SbStatTracker.getStats().getMana().getCurrent() > 90 && canInteract && isRoomAllowed();
 
         Colour colour = canTp ? this.correctColour.getValue() : this.failColour.getValue();
         VoxelShape shape = (this.fullBlock.getValue() ? Shapes.block() : Utils.getBlockShape(ether.getFirst()));
@@ -204,9 +204,13 @@ public class Ether extends Module implements CameraPositionProvider {
         });
     }
 
+    private boolean isRoomAllowed() {
+        return Map.getCurrentRoom() != null && !Utils.equalsOneOf(Map.getCurrentRoom().getData().name(), "Boulder", "Teleport Maze") && Map.getCurrentRoom().getData().type() != RoomType.TRAP;
+    }
+
     @SubscribeEvent
     public void onPlayerUse(PlayerInputEvent.Use event) {
-        if (!this.noRotate.getValue() || !this.teleportItem.getValue() || (Dungeon.isInBoss() && (Location.getFloor() == Floor.F7 || Location.getFloor() == Floor.M7))) return;
+        if (!this.noRotate.getValue() || !this.teleportItem.getValue() || (Dungeon.isInBoss() && (Location.getFloor() == Floor.F7 || Location.getFloor() == Floor.M7)) || !isRoomAllowed()) return;
         ItemStack stack = mc.player.getInventory().getSelectedItem();
         if (!isTpItem(stack)) return;
 
@@ -222,7 +226,7 @@ public class Ether extends Module implements CameraPositionProvider {
 
     @SubscribeEvent
     public void onUseItem(PacketEvent.Send event) {
-        if (!this.noRotate.getValue() || !this.teleportItem.getValue() || !noRotateFromPackets.getValue() || (Dungeon.isInBoss() && (Location.getFloor() == Floor.F7 || Location.getFloor() == Floor.M7))) return;
+        if (!this.noRotate.getValue() || !this.teleportItem.getValue() || !noRotateFromPackets.getValue() || (Dungeon.isInBoss() && (Location.getFloor() == Floor.F7 || Location.getFloor() == Floor.M7)) || !isRoomAllowed()) return;
         if (event.getPacket() instanceof ServerboundUseItemPacket packet) {
             ItemStack stack = mc.player.getItemBySlot(packet.getHand().asEquipmentSlot());
             if (!isTpItem(stack)) return;
@@ -243,7 +247,7 @@ public class Ether extends Module implements CameraPositionProvider {
         if (mc.level == null || mc.player == null
                 || !isTpItem(stack)
                 || SbStatTracker.getStats().getMana().getCurrent() < 180
-                || Map.getCurrentRoom() != null && Utils.equalsOneOf(Map.getCurrentRoom().getData().type(), RoomType.PUZZLE, RoomType.TRAP)
+                || !isRoomAllowed()
         ) return;
 
         // tspmo
