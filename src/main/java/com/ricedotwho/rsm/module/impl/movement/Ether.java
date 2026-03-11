@@ -73,6 +73,7 @@ public class Ether extends Module implements CameraPositionProvider {
     private final BooleanSetting depth = new BooleanSetting("Depth", true);
     private final BooleanSetting serverPos = new BooleanSetting("Server Position", true);
     private final BooleanSetting fullBlock = new BooleanSetting("Full Block", false);
+    private final BooleanSetting alwaysShow = new BooleanSetting("Show While Unsneaked", false);
 
     private final DefaultGroupSetting noRotateGroup = new DefaultGroupSetting("No Rotate", this);
     private final BooleanSetting noRotate = new BooleanSetting("Enabled", false);
@@ -134,7 +135,8 @@ public class Ether extends Module implements CameraPositionProvider {
                 renderMode,
                 depth,
                 serverPos,
-                fullBlock
+                fullBlock,
+                alwaysShow
         );
 
         noRotateGroup.add(
@@ -178,7 +180,7 @@ public class Ether extends Module implements CameraPositionProvider {
 
     @SubscribeEvent
     public void onRender(Render3DEvent.Extract event) {
-        if (mc.screen != null || !helper.getValue() || mc.player == null || !mc.player.isShiftKeyDown()) return;
+        if (mc.screen != null || !helper.getValue() || mc.player == null || (!mc.player.isShiftKeyDown() && !alwaysShow.getValue())) return;
         ItemStack held = mc.player.getMainHandItem();
         if (!ItemUtils.isEtherwarp(held)) return;
 
