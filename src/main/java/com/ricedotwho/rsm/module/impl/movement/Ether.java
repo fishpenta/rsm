@@ -205,7 +205,7 @@ public class Ether extends Module implements CameraPositionProvider {
     }
 
     private boolean isRoomAllowed() {
-        return Map.getCurrentRoom() != null && !Utils.equalsOneOf(Map.getCurrentRoom().getData().name(), "Boulder", "Teleport Maze") && Map.getCurrentRoom().getData().type() != RoomType.TRAP;
+        return Map.getCurrentRoom() == null || !Utils.equalsOneOf(Map.getCurrentRoom().getData().name(), "Boulder", "Teleport Maze") && Map.getCurrentRoom().getData().type() != RoomType.TRAP;
     }
 
     @SubscribeEvent
