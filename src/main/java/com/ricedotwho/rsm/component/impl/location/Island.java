@@ -1,7 +1,5 @@
 package com.ricedotwho.rsm.component.impl.location;
 
-import com.ricedotwho.rsm.RSM;
-import com.ricedotwho.rsm.module.impl.render.ClickGUI;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -27,7 +25,8 @@ public enum Island {
     JerryWorkshop("Jerry's Workshop"),
     Kuudra("Kuudra"),
     Mineshaft("Mineshaft"),
-    Unknown("(Unknown)");
+    Galatea("Galatea"),
+    Unknown("Unknown");
 
     private final String name;
 

@@ -184,7 +184,7 @@ public class Ether extends Module implements CameraPositionProvider {
         ItemStack held = mc.player.getMainHandItem();
         if (!ItemUtils.isEtherwarp(held)) return;
 
-        Vec3 pos = (renderPos == null ? (serverPos.getValue() ? mc.player.oldPosition() : mc.player.position()) : renderPos.asVec3()).add(0, EtherUtils.SNEAK_EYE_HEIGHT, 0);
+        Vec3 pos = (renderPos == null ? (serverPos.getValue() ? mc.player.oldPosition() : mc.player.position()) : renderPos.asVec3()).add(0, EtherUtils.getSneakHeight(), 0);
         Pair<BlockPos, Boolean> ether = EtherUtils.getEtherPosFromOrigin(pos, 57 + ItemUtils.getTunerDistance(held));
         if (ether.getFirst() == null) return;
 
@@ -258,7 +258,7 @@ public class Ether extends Module implements CameraPositionProvider {
         }
 
         boolean sneaking = mc.player.isShiftKeyDown();
-        Vec3 eyePos = (renderPos == null ? mc.player.position() : renderPos.asVec3()).add(0.0d, sneaking ? EtherUtils.SNEAK_EYE_HEIGHT : EtherUtils.STAND_EYE_HEIGHT, 0.0d);
+        Vec3 eyePos = (renderPos == null ? mc.player.position() : renderPos.asVec3()).add(0.0d, EtherUtils.getEyeHeight(), 0.0d);
         if (sneaking && ItemUtils.isEtherwarp(stack) && zpew.getValue()) {
 
             Pair<BlockPos, Boolean> ether = EtherUtils.getEtherPosFromOrigin(eyePos, yaw, pitch, 57 + ItemUtils.getTunerDistance(stack));

@@ -11,4 +11,7 @@ public interface LocalPlayerAccessor {
 
     @Accessor("xRotLast")
     void setXRotLast(float xRotLast);
+
+    @Accessor("crouching")
+    boolean wasSneaking();
 }
