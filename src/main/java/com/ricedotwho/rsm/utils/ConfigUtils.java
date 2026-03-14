@@ -189,6 +189,7 @@ public class ConfigUtils {
 //            ChatUtils.chat("Some config entries were invalid and skipped. Saving cleaned config...");
 //            saveConfig(module);
 //        }
+        module.onLoaded();
     }
 }
 

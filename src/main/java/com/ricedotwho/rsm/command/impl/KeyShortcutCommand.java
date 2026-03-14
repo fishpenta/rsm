@@ -9,7 +9,7 @@ import com.ricedotwho.rsm.module.impl.render.ClickGUI;
 import com.ricedotwho.rsm.ui.keyshortcuts.KeyShortcutGui;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 
-@CommandInfo(name = "keyshortcuts", description = "Opens the key shortcuts gui")
+@CommandInfo(name = "keyshortcuts", aliases = "ks", description = "Opens the key shortcuts gui")
 public class KeyShortcutCommand extends Command {
 
     @Override

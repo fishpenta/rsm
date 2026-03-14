@@ -49,7 +49,6 @@ import net.minecraft.network.chat.MutableComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.List;
 
@@ -108,8 +107,8 @@ public class RSM implements ClientModInitializer {
             P3Qol.class,
             VisualWords.class,
             Hud.class,
-            ImageHud.class
-            //KeyShortcuts.class
+            ImageHud.class,
+            KeyShortcuts.class
     );
 
     private final List<Class<? extends Command>> COMMANDS = Arrays.asList(
@@ -120,8 +119,8 @@ public class RSM implements ClientModInitializer {
             AddonCommand.class,
             DevCommand.class,
             VisualWordCommand.class,
-            ImageHudCommand.class
-            //KeyShortcutCommand.class
+            ImageHudCommand.class,
+            KeyShortcutCommand.class
     );
 
     private final List<Class<? extends ModComponent>> COMPONENTS = Arrays.asList(

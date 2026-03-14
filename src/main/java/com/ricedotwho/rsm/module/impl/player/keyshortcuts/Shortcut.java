@@ -26,11 +26,9 @@ public class Shortcut implements Accessor {
     private static Shortcut selected = null;
 
     private boolean enabled;
-    private boolean allowGui = false;
     private final Keybind keybind = new Keybind(InputConstants.UNKNOWN, false, this::run);
     private String command;
     private boolean writing = false, waitingKey = false;
-
     private final TextInput input = new TextInput("", 12, false, 256);
 
     public Shortcut(){
@@ -55,7 +53,13 @@ public class Shortcut implements Accessor {
     }
 
     public void setEnabled(boolean bl){
-
+        if (!bl) {
+            this.enabled = false;
+            this.keybind.unregister();
+        } else {
+            if (!this.enabled) this.keybind.register();
+            this.enabled = true;
+        }
     }
 
     public boolean click(double mouseX, double mouseY, int button) {
@@ -67,6 +71,7 @@ public class Shortcut implements Accessor {
         if (NVGUtils.isHovering(mouseX, mouseY, 5, 5, INPUT_WIDTH, H)) {
             selected = this;
             this.writing = true;
+            input.click((float) (mouseX - 10f), button);
         } else {
             this.writing = false;
         }
@@ -79,14 +84,15 @@ public class Shortcut implements Accessor {
         }
 
         if (NVGUtils.isHovering(mouseX, mouseY, guiX, 5, SUB, H)) {
-            this.allowGui = !this.allowGui;
+            keybind.setAllowGui(!keybind.isAllowGui());
         }
 
         if (NVGUtils.isHovering(mouseX, mouseY, enabledX, 5, SUB, H)) {
-            this.enabled = !this.enabled;
+            setEnabled(!this.enabled);
         }
 
         if (NVGUtils.isHovering(mouseX, mouseY, deleteX, 5, SUB, H)) {
+            this.keybind.unregister();
             KeyShortcuts.getData().getValue().remove(this);
             return true;
         }
@@ -96,6 +102,7 @@ public class Shortcut implements Accessor {
     public boolean charTyped(char typedChar, int keyCode) {
         if (writing) {
             input.charTyped(typedChar);
+            this.command = input.getValue();
         }
         return false;
     }
@@ -109,7 +116,20 @@ public class Shortcut implements Accessor {
                 return true;
             }
             input.keyTyped(event);
+            this.command = input.getValue();
         }
+
+        if (!this.waitingKey || selected != this) return false;
+        InputConstants.Key key = InputConstants.getKey(event);
+
+        this.waitingKey = false;
+        selected = null;
+        if (key.getValue() == 0 || key.getValue() == InputConstants.KEY_ESCAPE) {
+            keybind.setKeyBind(InputConstants.UNKNOWN);
+            selected = null;
+            return true;
+        }
+        keybind.setKeyBind(key);
         return false;
     }
 
@@ -117,7 +137,7 @@ public class Shortcut implements Accessor {
         NVGUtils.drawOutlineRect(x, y, WIDTH, HEIGHT, 1f, FatalityColours.GROUP_OUTLINE);
         NVGUtils.drawRect(x, y, WIDTH, HEIGHT, FatalityColours.GROUP_FILL);
 
-        // me when im in the top 10 worst code competition and my opponent is ricedotwho
+        // me when im in top 10 worst code competition and my opponent is ricedotwho
 
         boolean hoveringInput = NVGUtils.isHovering(mouseX, mouseY, x + 5, y + 5, INPUT_WIDTH, H);
 
@@ -153,10 +173,10 @@ public class Shortcut implements Accessor {
         float guiX = keyX + SUB + GAP;
         boolean allowGuiHovered = NVGUtils.isHovering(mouseX, mouseY, guiX, y + 5, SUB, H);
         Colour guiColour;
-        if (this.allowGui) {
+        if (this.keybind.isAllowGui()) {
             guiColour = allowGuiHovered ? FatalityColours.SELECTED.darker() : FatalityColours.SELECTED;
         } else {
-            guiColour = allowGuiHovered ? FatalityColours.GROUP_FILL.brighter() : FatalityColours.GROUP_FILL;
+            guiColour = allowGuiHovered ? FatalityColours.GROUP_OUTLINE.brighter() : FatalityColours.GROUP_OUTLINE;
         }
         NVGUtils.drawRect(guiX, y + 5, SUB, H, 5f, guiColour);
         NVGUtils.drawText("Allow Gui", guiX + (SUB - NVGUtils.getTextWidth("Allow Gui", 12, NVGUtils.JOSEFIN)) / 2, y + 5 + NVGUtils.getTextHeight(12, NVGUtils.JOSEFIN) / 2, 12, FatalityColours.TEXT, NVGUtils.JOSEFIN);
@@ -171,7 +191,7 @@ public class Shortcut implements Accessor {
             enabledColour = enabledHovered ? FatalityColours.SELECTED.darker() : FatalityColours.SELECTED;
         } else {
             text = "Off";
-            enabledColour = enabledHovered ? FatalityColours.GROUP_FILL.brighter() : FatalityColours.GROUP_FILL;
+            enabledColour = enabledHovered ? FatalityColours.GROUP_OUTLINE.brighter() : FatalityColours.GROUP_OUTLINE;
         }
         NVGUtils.drawRect(enabledX, y + 5, SUB, H, 5f, enabledColour);
         NVGUtils.drawText(text, enabledX + (SUB - NVGUtils.getTextWidth(text, 12, NVGUtils.JOSEFIN)) / 2, y + 5 + NVGUtils.getTextHeight(12, NVGUtils.JOSEFIN) / 2, 12, FatalityColours.TEXT, NVGUtils.JOSEFIN);
@@ -191,7 +211,7 @@ public class Shortcut implements Accessor {
     public JsonObject serialize() {
         JsonObject obj = new JsonObject();
         obj.addProperty("enabled", this.enabled);
-        obj.addProperty("gui", this.allowGui);
+        obj.addProperty("gui", this.keybind.isAllowGui());
         obj.addProperty("key", this.keybind.getKeyBind().getName());
         obj.addProperty("command", this.command);
         return obj;

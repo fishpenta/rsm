@@ -45,6 +45,7 @@ public class CommandManager extends Manager<Command> implements Accessor {
         // aliases
         for (String s : command.getAliases()){
             dispatcher.register(Command.literal(s)
+                    .executes(ctx -> dispatcher.execute(command.name(), ctx.getSource()))
                     .redirect(dispatcher.getRoot().getChild(command.name()))
             );
         }

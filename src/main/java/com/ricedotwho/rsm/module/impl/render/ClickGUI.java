@@ -97,4 +97,9 @@ public class ClickGUI extends Module {
         }
         toggle();
     }
+
+    @Override
+    public void onLoaded() {
+        FatalityColours.setColours(this);
+    }
 }

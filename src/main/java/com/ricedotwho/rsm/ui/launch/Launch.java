@@ -108,13 +108,13 @@ public class Launch {
         // Config
         RSMConfig gui = new RSMConfig();
         RSMGuiEditor guiEditor = new RSMGuiEditor();
-//        KeyShortcutGui keyShortcutGui = new KeyShortcutGui();
+        KeyShortcutGui keyShortcutGui = new KeyShortcutGui();
 
         gui.init();
 
         rsm.setConfigGui(gui);
         rsm.setGUIEditor(guiEditor);
-//        rsm.setShortcutGui(keyShortcutGui);
+        rsm.setShortcutGui(keyShortcutGui);
 
         Runtime.getRuntime().addShutdownHook(new Thread(Launch::end));
     }

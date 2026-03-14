@@ -1,15 +1,15 @@
 package com.ricedotwho.rsm.ui.keyshortcuts;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import com.ricedotwho.rsm.RSM;
-import com.ricedotwho.rsm.data.Colour;
 import com.ricedotwho.rsm.module.impl.player.keyshortcuts.KeyShortcuts;
 import com.ricedotwho.rsm.module.impl.player.keyshortcuts.Shortcut;
 import com.ricedotwho.rsm.module.impl.render.ClickGUI;
 import com.ricedotwho.rsm.ui.clickgui.RSMConfig;
 import com.ricedotwho.rsm.ui.clickgui.api.FatalityColours;
 import com.ricedotwho.rsm.ui.clickgui.api.Mask;
+import com.ricedotwho.rsm.ui.clickgui.impl.Panel;
+import com.ricedotwho.rsm.ui.clickgui.impl.module.ModuleComponent;
 import com.ricedotwho.rsm.utils.Accessor;
 import com.ricedotwho.rsm.utils.MouseUtils;
 import com.ricedotwho.rsm.utils.render.render2d.NVGSpecialRenderer;
@@ -28,9 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.nanovg.NanoVG.*;
-import static org.lwjgl.nanovg.NanoVG.nvgStroke;
-import static org.lwjgl.nanovg.NanoVG.nvgStrokeColor;
-import static org.lwjgl.nanovg.NanoVG.nvgStrokeWidth;
 
 public class KeyShortcutGui extends Screen implements Accessor {
     @Getter
@@ -41,8 +38,10 @@ public class KeyShortcutGui extends Screen implements Accessor {
     public List<Mask> maskList;
     private final int WIDTH = 850;
     private final int HEIGHT = 600;
+    private final int RENDER_SECTION_HEIGHT = 475;
 
     private long lastMouseTime = 0;
+    private float scroll = 0;
     private boolean clickHandled = false;
 
     public KeyShortcutGui() {
@@ -110,14 +109,25 @@ public class KeyShortcutGui extends Screen implements Accessor {
     }
 
     private void drawShortCuts(GuiGraphics gfx, double mouseX, double mouseY) {
-        //todo: scroll
+        List<Shortcut> list = KeyShortcuts.getData().getValue();
+        if (list.size() * 40f < RENDER_SECTION_HEIGHT && scroll != 0) scroll = 0;
         float x = (float) (getPosition().x + 16f);
-        float y = (float) (getPosition().y + 95f);
+        float start = (float) (getPosition().y + 100f);
+        float y = start - scroll;
 
-        for (Shortcut s : KeyShortcuts.getData().getValue()) {
+        NVGUtils.pushScissor(x, start, WIDTH, RENDER_SECTION_HEIGHT);
+
+        for (Shortcut s : list) {
+            if (y < start - 40) {
+                y += 40;
+                continue;
+            }
             s.render(gfx, x, y, mouseX, mouseY);
             y += 40;
+            if (y > start + RENDER_SECTION_HEIGHT + 20) break;
         }
+
+        NVGUtils.popScissor();
     }
 
     @Override
@@ -128,20 +138,27 @@ public class KeyShortcutGui extends Screen implements Accessor {
     @Override
     public boolean charTyped(CharacterEvent event) {
         char typedChar = event.codepointAsString().charAt(0);
-        KeyShortcuts.getData().getValue().forEach(s -> s.charTyped(typedChar, event.codepoint()));
+        boolean ret = false;
+        for (Shortcut s : KeyShortcuts.getData().getValue()) {
+            if (s.charTyped(typedChar, event.codepoint())) ret = true;
+        }
+        if (ret) return true;
         return super.charTyped(event);
     }
 
     @Override
     public boolean keyPressed(KeyEvent input) {
-        KeyShortcuts.getData().getValue().forEach(s -> s.keyTyped(input));
+        boolean ret = false;
+        for (Shortcut s : KeyShortcuts.getData().getValue()) {
+            if (s.keyTyped(input)) ret = true;
+        }
+        if (ret) return true;
         return super.keyPressed(input);
     }
 
     @Override
     public final boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-        long now = System.currentTimeMillis();
-        lastMouseTime = now;
+        lastMouseTime = System.currentTimeMillis();
 
         clickHandled = false;
 
@@ -154,20 +171,25 @@ public class KeyShortcutGui extends Screen implements Accessor {
         float buttonY = (float) (getPosition().y + 67f);
         boolean hoveringSearch = NVGUtils.isHovering(mouseX, mouseY, buttonX, buttonY, 95f, 25);
         if (hoveringSearch) {
-            KeyShortcuts.getData().getValue().add(new Shortcut());
-            KeyShortcuts.save();
+            KeyShortcuts.add(new Shortcut());
             return false;
         }
 
         float x = (float) (getPosition().x + 16f);
-        float y = (float) (getPosition().y + 95f);
+        float start = (float) (getPosition().y + 100f);
+        float y = start - scroll;
 
         for (Shortcut sc : KeyShortcuts.getData().getValue()) {
+            if (y < start - 40) {
+                y += 40;
+                continue;
+            }
             float relY = (float) (mouseY - y), relX = (float) (mouseX - x);
             if (sc.click(relX, relY, button)) {
                 break;
             }
             y += 40;
+            if (y > getPosition().y + 100f + RENDER_SECTION_HEIGHT + 20) break;
         }
 
         if (!clickHandled && NVGUtils.isHovering(mouseX, mouseY, (int) getPosition().x, (int) getPosition().y, width, height) && button == 0) {
@@ -183,14 +205,6 @@ public class KeyShortcutGui extends Screen implements Accessor {
 
     @Override
     public final boolean mouseReleased(MouseButtonEvent click) {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastMouseTime > 50) {
-            float scale = RSMConfig.getStandardGuiScale();
-            double mouseX = MouseUtils.mouseX() / scale;
-            double mouseY = MouseUtils.mouseY() / scale;
-
-
-        }
         return super.mouseReleased(click);
     }
 
@@ -206,11 +220,14 @@ public class KeyShortcutGui extends Screen implements Accessor {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double hScroll, double vScroll) {
-        float scale = RSMConfig.getStandardGuiScale();
-        double x = MouseUtils.mouseX() / scale;
-        double y = MouseUtils.mouseY() / scale;
-
-
+        float amount = (float) (Math.signum(vScroll) * 20f);
+        float h = KeyShortcuts.getData().getValue().size() * 40f;
+        if (h < RENDER_SECTION_HEIGHT && scroll != 0) return false;
+        float nextScroll = scroll - amount;
+        if (nextScroll < 0) return false;
+        float bottom = h - (nextScroll);
+        if (bottom < RENDER_SECTION_HEIGHT) return false;
+        scroll = nextScroll;
         return super.mouseScrolled(mouseX, mouseY, hScroll, vScroll);
     }
 
