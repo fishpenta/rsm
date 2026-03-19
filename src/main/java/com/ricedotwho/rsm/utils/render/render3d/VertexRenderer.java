@@ -16,7 +16,7 @@ import java.util.List;
 
 @UtilityClass
 public final class VertexRenderer {
-    private final List<Pair<Integer, Integer>> edges = List.of(
+    private final List<Pair<Integer, Integer>> squareEdges = List.of(
             new Pair<>(0, 1), new Pair<>(1, 5),
             new Pair<>(5, 4), new Pair<>(4, 0),
             new Pair<>(3, 2), new Pair<>(2, 6),
@@ -24,6 +24,10 @@ public final class VertexRenderer {
             new Pair<>(0, 3), new Pair<>(1, 2),
             new Pair<>(5, 6), new Pair<>(4, 7)
     );
+
+    private final int[][] rectEdges = {
+            {0, 1}, {1, 2}, {2, 3}, {3, 0}
+    };
 
     private static final Int2ObjectMap<CircleData> CACHE = new Int2ObjectOpenHashMap<>();
 
@@ -49,7 +53,7 @@ public final class VertexRenderer {
     public void renderOutlineBox(PoseStack.Pose pose, VertexConsumer buffer, AABB aabb, Colour colour) {
         List<Float> corners = getCorners(aabb);
 
-        for (Pair<Integer, Integer> pair : edges) {
+        for (Pair<Integer, Integer> pair : squareEdges) {
             int i0 = pair.getFirst() * 3;
             int i1 = pair.getSecond() * 3;
             float x0 = corners.get(i0);
@@ -115,6 +119,41 @@ public final class VertexRenderer {
         buffer.addVertex(matrix, maxX, maxY, maxZ).setColor(col);
         buffer.addVertex(matrix, maxX, maxY, maxZ).setColor(col);
         buffer.addVertex(matrix, maxX, maxY, maxZ).setColor(col);
+    }
+
+    public void renderHorizontalRect(PoseStack.Pose pose, VertexConsumer buffer, AABB aabb, Colour colour) {
+        float x0 = (float) aabb.minX;
+        float z0 = (float) aabb.minZ;
+        float x1 = (float) aabb.maxX;
+        float z1 = (float) aabb.maxZ;
+        float y = (float) aabb.minY;
+        float[] corners = {
+                x0, y, z0,
+                x1, y, z0,
+                x1, y, z1,
+                x0, y, z1
+        };
+        for (int[] e : rectEdges) {
+            int i0 = e[0] * 3;
+            int i1 = e[1] * 3;
+            float xA = corners[i0];
+            float yA = corners[i0 + 1];
+            float zA = corners[i0 + 2];
+            float xB = corners[i1];
+            float yB = corners[i1 + 1];
+            float zB = corners[i1 + 2];
+            float dx = xB - xA;
+            float dy = yB - yA;
+            float dz = zB - zA;
+
+            buffer.addVertex(pose, xA, yA, zA)
+                    .setColor(colour.getRGB())
+                    .setNormal(pose, dx, dy, dz);
+
+            buffer.addVertex(pose, xB, yB, zB)
+                    .setColor(colour.getRGB())
+                    .setNormal(pose, dx, dy, dz);
+        }
     }
 
     public void renderCircle(PoseStack.Pose pose, VertexConsumer buffer, Vec3 pos, float radius, Colour colour, int slices) {
