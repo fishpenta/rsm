@@ -165,6 +165,7 @@ public class Renderer3D extends ModComponent {
         }
     }
 
+
     private void renderBatchedBeaconBeams(PoseStack stack, Vec3 camera) {
         for (Beacon task : this.beacons) {
             task.renderBeacon(stack, camera);

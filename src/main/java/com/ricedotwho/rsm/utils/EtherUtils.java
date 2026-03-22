@@ -91,6 +91,10 @@ public class EtherUtils implements Accessor {
     }
 
     public BlockPos fastGetEtherFromOrigin(Vec3 start, float yaw, float pitch, int dist) {
+        return fastGetEtherFromOrigin(start, yaw, pitch, dist, false);
+    }
+
+    public BlockPos fastGetEtherFromOrigin(Vec3 start, float yaw, float pitch, int dist, boolean fullOnly) {
         if (Minecraft.getInstance().player == null || Minecraft.getInstance().level == null)
             return null;
         Vec3 end = Minecraft.getInstance().player.calculateViewVector(pitch, yaw).scale(dist).add(start);
@@ -135,7 +139,8 @@ public class EtherUtils implements Accessor {
                 return null;
             ChunkAccess chunk = world.getChunk(pos);
 
-            Block currentBlock = chunk.getBlockState(pos).getBlock();
+            BlockState blockState = chunk.getBlockState(pos);
+            Block currentBlock = blockState.getBlock();
             int currentBlockId = Block.getId(currentBlock.defaultBlockState());
 
             if (!validEtherwarpFeetIds.get(currentBlockId)) {
@@ -146,7 +151,7 @@ public class EtherUtils implements Accessor {
                                     pos.getY() + 1,
                                     pos.getZ()))
                             .getBlock().defaultBlockState());
-                if (!validEtherwarpFeetIds.get(footBlockId))
+                if (!validEtherwarpFeetIds.get(footBlockId) || (fullOnly && !blockState.isCollisionShapeFullBlock(Minecraft.getInstance().level, pos)))
                     return null;
 
                 int headBlockId = Block.getId(
