@@ -37,8 +37,6 @@ import java.util.regex.Pattern;
 @Getter
 @ModuleInfo(aliases = "P3 Qol", id = "P3Qol", category = Category.DUNGEONS)
 public class P3Qol extends Module {
-    public static final Pattern TERM = Pattern.compile("^(.*?) (?:activated|completed) a (terminal|device|lever)! \\((\\d+)/(\\d+)\\)");
-
     private final BooleanSetting deviceDone = new BooleanSetting("Device Title", false);
     private final ColourSetting deviceDoneColour = new ColourSetting("Device Colour", Colour.GREEN);
     private final StringSetting deviceContent = new StringSetting("Device", "Device Done!");
@@ -72,7 +70,7 @@ public class P3Qol extends Module {
     public void onChat(ChatEvent.Chat event) {
         if (!Location.getArea().is(Island.Dungeon) || !DungeonUtils.isPhase(Phase7.P3) || mc.player == null) return;
         String text = ChatFormatting.stripFormatting(event.getMessage().getString());
-        Matcher matcher = TERM.matcher(text);
+        Matcher matcher = Dungeon.TERM.matcher(text);
         if (!matcher.find()) return;
         String name = matcher.group(1);
         String type = matcher.group(2);

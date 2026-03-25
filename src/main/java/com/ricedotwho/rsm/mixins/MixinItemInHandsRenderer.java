@@ -9,18 +9,13 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(ItemInHandRenderer.class)
 public class MixinItemInHandsRenderer {
 
-    @ModifyExpressionValue(method = "renderHandsWithItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getXRot(F)F"))
-    public float getPitchFirst(float original) {
-        return CameraHandler.getPitch(original);
-    }
-
     @ModifyExpressionValue(method = "renderHandsWithItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getViewXRot(F)F"))
     public float getPitch(float original) {
         return CameraHandler.getPitch(original);
     }
 
-    @ModifyExpressionValue(method = "renderHandsWithItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getViewYRot(F)F"))
-    public float getYaw(float original) {
-        return CameraHandler.getYaw(original);
-    }
+//    @ModifyExpressionValue(method = "renderHandsWithItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getViewYRot(F)F"))
+//    public float getYaw(float original) {
+//        return CameraHandler.getYaw(original);
+//    }
 }

@@ -76,6 +76,15 @@ public class DungeonUtils implements Accessor {
 
         return UNKNOWN;
     }
+
+    public Phase7 getSectionFromI(int i) {
+        return switch (i) {
+            case 0 -> Phase7.P1;
+            case 1 -> Phase7.P2;
+            case 2 -> Phase7.P3;
+            default -> Phase7.P4;
+        };
+    }
     
     public boolean isPhase(Phase7 phase) {
         return getF7Phase() == phase;
