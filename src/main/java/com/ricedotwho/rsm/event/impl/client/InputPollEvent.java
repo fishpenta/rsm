@@ -12,10 +12,13 @@ public class InputPollEvent extends Event {
     private final Input clientInput;
     @Getter
     private final MutableInput input;
+    @Getter
+    private boolean isActualLocalPlayer;
 
-    public InputPollEvent(Input clientInput, MutableInput input) {
+    public InputPollEvent(Input clientInput, MutableInput input, boolean bl) {
         this.clientInput = clientInput;
         this.input = input;
+        this.isActualLocalPlayer = bl;
     }
 
 }
