@@ -199,7 +199,9 @@ public class Panel implements Accessor {
             if (category == selected) {
                 renderer.categoryList.stream()
                         .filter(categoryComponent -> categoryComponent.getCategory().equals(category))
-                        .findFirst().orElse(null).release(mouseX, mouseY, mouseButton);
+                        .findFirst()
+                        .orElse(null)
+                        .release(mouseX, mouseY, mouseButton);
             }
         }
     }
@@ -228,22 +230,27 @@ public class Panel implements Accessor {
             String categoryName = category.name();
 
             renderer.maskList.add(new Mask((int) (a - 10f), (int) (getPosition().y + 12f), (int) (NVGUtils.getTextWidth(categoryName, 11, ClickGUI.getFont()) + 39f), (int) 25f));
+
             if (NVGUtils.isHovering(mouseX, mouseY, (int) (a - 10f), (int) (getPosition().y + 12f), (int) (NVGUtils.getTextWidth(categoryName, 11, ClickGUI.getFont()) + 39f), (int) 25f) && mouseButton == 0) {
                 selected = category;
                 this.search.setValue("");
                 this.updateSearch();
                 Objects.requireNonNull(renderer.categoryList.stream()
                         .filter(categoryComponent -> categoryComponent.getCategory().equals(category))
-                        .findFirst().orElse(null)).selected =
+                        .findFirst()
+                        .orElse(null)).selected =
                         Objects.requireNonNull(renderer.categoryList.stream()
                                 .filter(categoryComponent -> categoryComponent.getCategory().equals(category))
-                                .findFirst().orElse(null)).lastSelected = null;
+                                .findFirst()
+                                .orElse(null)).lastSelected = null;
             }
+
             if (category == selected) {
                 Objects.requireNonNull(renderer.categoryList.stream()
                         .filter(categoryComponent -> categoryComponent.getCategory().equals(category))
                         .findFirst().orElse(null)).click(mouseX, mouseY, mouseButton);
             }
+
             last = categoryName;
             a += (int) (NVGUtils.getTextWidth(last, 11, ClickGUI.getFont()) + 40);
         }

@@ -185,7 +185,7 @@ public class CategoryComponent {
 
             if (module.getCategory() == this.category) {
                 if (hovered) {
-                    if ((mouseButton == button || module.getSettings().isEmpty()) && !module.getInfo().alwaysDisabled()) {
+                    if (mouseButton == button && !module.getInfo().alwaysDisabled()) {
                         module.toggle();
                     } else if (!module.getSettings().isEmpty()) {
                         selected = moduleComponent;

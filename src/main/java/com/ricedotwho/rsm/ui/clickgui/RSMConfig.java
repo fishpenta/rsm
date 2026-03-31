@@ -122,6 +122,7 @@ public class RSMConfig extends Screen implements Accessor {
                 }
             }
         }
+
         return super.mouseClicked(click, doubled);
     }
 
