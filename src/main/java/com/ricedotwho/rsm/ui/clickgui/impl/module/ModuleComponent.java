@@ -122,15 +122,17 @@ public class ModuleComponent {
     public void click(double mouseX, double mouseY, int mouseButton) {
         float a = (float) (renderer.getPosition().x + 144f);
         float h = NVGUtils.getTextHeight(12, NVGUtils.JOSEFIN);
+
         for (GroupValueComponent group : groupValues) {
             if (!group.getSetting().isShown()) continue;
+
             if (NVGUtils.isHovering(mouseX, mouseY,
                     (int) (a - 2),
                     (int) ((int) (renderer.getPosition().y + 75F) - h),
                     (int) NVGUtils.getTextWidth(group.getSetting().getName(), 12, NVGUtils.JOSEFIN) + 4,
                     (int) h * 2 + 10)) {
 
-                if ((mouseButton == RSM.getModule(ClickGUI.class).getToggleClickType().getIndex() || group.getSetting().getValue().getSettings().isEmpty()) && !group.getSetting().getValue().getInfo().alwaysDisabled() && !group.getSetting().getName().equals("General")) {
+                if (mouseButton == RSM.getModule(ClickGUI.class).getToggleClickType().getIndex() && !group.getSetting().getValue().getInfo().alwaysDisabled() && !group.getSetting().getName().equals("General")) {
                     group.getSetting().getValue().toggle();
                 } else if (!group.getSetting().getValue().getSettings().isEmpty()) {
                     selectedGroup = group;
@@ -139,8 +141,8 @@ public class ModuleComponent {
 
             if (group == selectedGroup) {
                 group.click(mouseX, mouseY, mouseButton);
-
             }
+
             a += NVGUtils.getTextWidth(group.getSetting().getName(), 12, NVGUtils.JOSEFIN) + 15f;
         }
     }
