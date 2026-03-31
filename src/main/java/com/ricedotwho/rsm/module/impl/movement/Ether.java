@@ -201,8 +201,10 @@ public class Ether extends Module implements CameraPositionProvider {
 
         Colour colour = canTp ? this.correctColour.getValue() : this.failColour.getValue();
         Colour outline = canTp ? this.correctColourOutline.getValue() : this.failColourOutline.getValue();
-        VoxelShape shape = (this.fullBlock.getValue() ? Shapes.block() : Utils.getBlockShape(ether.getFirst()));
-        AABB aabb = shape.bounds().move(ether.getFirst());
+
+        // VoxelShape shape = (this.fullBlock.getValue() ? Shapes.block() : Utils.getBlockShape(ether.getFirst()));
+        // AABB aabb = shape.bounds().move(ether.getFirst());
+        AABB aabb = new AABB(0, 0, 0, 1, 1, 1).move(ether.getFirst());
 
         Renderer3D.addTask(switch (this.renderMode.getValue()) {
             case "Outline" -> new OutlineBox(aabb, outline, this.depth.getValue());
