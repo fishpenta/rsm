@@ -5,8 +5,6 @@ import com.ricedotwho.rsm.event.Event;
 import lombok.Getter;
 import net.minecraft.world.entity.player.Input;
 
-import java.util.function.Consumer;
-
 public class InputPollEvent extends Event {
     @Getter
     private final Input clientInput;

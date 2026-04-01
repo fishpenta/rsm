@@ -1,12 +1,12 @@
 package com.ricedotwho.rsm.component.impl;
 
-import com.ricedotwho.rsm.RSM;
 import com.ricedotwho.rsm.component.api.ModComponent;
 import com.ricedotwho.rsm.component.impl.task.TaskComponent;
 import com.ricedotwho.rsm.data.TerminalType;
 import com.ricedotwho.rsm.event.api.SubscribeEvent;
 import com.ricedotwho.rsm.event.impl.client.PacketEvent;
-import com.ricedotwho.rsm.event.impl.game.*;
+import com.ricedotwho.rsm.event.impl.game.GuiEvent;
+import com.ricedotwho.rsm.event.impl.game.TerminalEvent;
 import com.ricedotwho.rsm.event.impl.world.WorldEvent;
 import com.ricedotwho.rsm.module.impl.dungeon.boss.p3.terminal.TerminalSolver;
 import com.ricedotwho.rsm.module.impl.dungeon.boss.p3.terminal.types.Term;
@@ -16,18 +16,14 @@ import com.ricedotwho.rsm.utils.NumberUtils;
 import com.ricedotwho.rsm.utils.Utils;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.MenuType;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Terminals extends ModComponent {
     private static final DecimalFormat twoPlace = new DecimalFormat("0.##");

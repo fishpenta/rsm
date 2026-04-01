@@ -1,11 +1,9 @@
 package com.ricedotwho.rsm.mixins;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.ricedotwho.rsm.component.impl.camera.CameraHandler;
 import com.ricedotwho.rsm.utils.Accessor;
 import com.ricedotwho.rsm.utils.RotationState;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.phys.Vec3;

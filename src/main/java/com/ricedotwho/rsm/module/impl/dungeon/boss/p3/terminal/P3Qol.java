@@ -32,7 +32,6 @@ import net.minecraft.world.phys.AABB;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Getter
 @ModuleInfo(aliases = "P3 Qol", id = "P3Qol", category = Category.DUNGEONS)

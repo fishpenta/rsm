@@ -1,20 +1,18 @@
 package com.ricedotwho.rsm.component.impl;
 
 import com.ricedotwho.rsm.component.api.ModComponent;
-import com.ricedotwho.rsm.component.impl.task.TaskComponent;
-import com.ricedotwho.rsm.data.TerminalType;
 import com.ricedotwho.rsm.event.api.SubscribeEvent;
 import com.ricedotwho.rsm.event.impl.client.PacketEvent;
-import com.ricedotwho.rsm.event.impl.game.TerminalEvent;
-import com.ricedotwho.rsm.event.impl.game.*;
+import com.ricedotwho.rsm.event.impl.game.ChatEvent;
+import com.ricedotwho.rsm.event.impl.game.ClientTickEvent;
+import com.ricedotwho.rsm.event.impl.game.ConnectionEvent;
+import com.ricedotwho.rsm.event.impl.game.ServerTickEvent;
 import com.ricedotwho.rsm.event.impl.player.HealthChangedEvent;
 import com.ricedotwho.rsm.event.impl.render.Render2DEvent;
 import com.ricedotwho.rsm.event.impl.render.Render3DEvent;
 import com.ricedotwho.rsm.event.impl.world.BlockChangeEvent;
 import com.ricedotwho.rsm.event.impl.world.WorldEvent;
 import com.ricedotwho.rsm.mixins.accessor.AccessorClientboundSectionBlocksUpdatePacket;
-import com.ricedotwho.rsm.utils.ChatUtils;
-import com.ricedotwho.rsm.utils.Utils;
 import lombok.Getter;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
@@ -22,13 +20,10 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.network.protocol.common.ClientboundPingPacket;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.MenuType;
 
 public class EventComponent extends ModComponent {
     @Getter

@@ -1,7 +1,6 @@
 package com.ricedotwho.rsm.module.impl.render;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.ricedotwho.rsm.event.api.SubscribeEvent;
 import com.ricedotwho.rsm.event.impl.game.ChatEvent;
 import com.ricedotwho.rsm.event.impl.player.HealthChangedEvent;
@@ -17,9 +16,6 @@ import com.ricedotwho.rsm.utils.render.render2d.NVGSpecialRenderer;
 import com.ricedotwho.rsm.utils.render.render2d.NVGUtils;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 
 import java.util.regex.Pattern;
 

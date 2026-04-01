@@ -9,7 +9,6 @@ import com.ricedotwho.rsm.ui.clickgui.RSMConfig;
 import com.ricedotwho.rsm.ui.clickgui.api.FatalityColours;
 import com.ricedotwho.rsm.ui.clickgui.impl.module.group.GroupValueComponent;
 import com.ricedotwho.rsm.ui.clickgui.impl.module.settings.InputValueComponent;
-import com.ricedotwho.rsm.ui.clickgui.impl.module.settings.ValueComponent;
 import com.ricedotwho.rsm.utils.render.animation.Animation;
 import com.ricedotwho.rsm.utils.render.animation.Easing;
 import com.ricedotwho.rsm.utils.render.render2d.ColourUtils;

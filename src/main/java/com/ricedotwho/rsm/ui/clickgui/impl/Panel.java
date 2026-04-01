@@ -12,9 +12,7 @@ import com.ricedotwho.rsm.ui.clickgui.impl.category.CategoryComponent;
 import com.ricedotwho.rsm.ui.clickgui.impl.module.ModuleComponent;
 import com.ricedotwho.rsm.ui.clickgui.impl.module.settings.impl.TextInput;
 import com.ricedotwho.rsm.utils.Accessor;
-import com.ricedotwho.rsm.utils.ChatUtils;
 import com.ricedotwho.rsm.utils.render.animation.Animation;
-import com.ricedotwho.rsm.utils.render.animation.Easing;
 import com.ricedotwho.rsm.utils.render.render2d.ColourUtils;
 import com.ricedotwho.rsm.utils.render.render2d.Image;
 import com.ricedotwho.rsm.utils.render.render2d.NVGUtils;
@@ -24,7 +22,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.KeyEvent;
 import org.joml.Vector2d;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 

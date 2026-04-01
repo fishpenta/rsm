@@ -1,7 +1,6 @@
 package com.ricedotwho.rsm.command.fabric;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.ricedotwho.rsm.RSM;
 import lombok.experimental.UtilityClass;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;

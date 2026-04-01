@@ -30,7 +30,6 @@ import com.ricedotwho.rsm.module.impl.player.ChestHitFix;
 import com.ricedotwho.rsm.module.impl.player.keyshortcuts.KeyShortcuts;
 import com.ricedotwho.rsm.module.impl.render.*;
 import com.ricedotwho.rsm.module.impl.render.hud.Hud;
-import com.ricedotwho.rsm.module.impl.render.ImageHud;
 import com.ricedotwho.rsm.module.impl.render.opsec.OpSec;
 import com.ricedotwho.rsm.module.impl.render.visualwords.VisualWords;
 import com.ricedotwho.rsm.ui.clickgui.RSMConfig;

@@ -1,6 +1,9 @@
 package com.ricedotwho.rsm.ui.clickgui.settings.impl;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.ricedotwho.rsm.RSM;
 import com.ricedotwho.rsm.ui.clickgui.settings.Setting;
 import com.ricedotwho.rsm.utils.Accessor;

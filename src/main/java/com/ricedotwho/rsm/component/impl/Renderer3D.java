@@ -7,13 +7,11 @@ import com.ricedotwho.rsm.event.api.SubscribeEvent;
 import com.ricedotwho.rsm.event.impl.render.Render3DEvent;
 import com.ricedotwho.rsm.utils.render.render3d.Render3DLayer;
 import com.ricedotwho.rsm.utils.render.render3d.type.*;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 

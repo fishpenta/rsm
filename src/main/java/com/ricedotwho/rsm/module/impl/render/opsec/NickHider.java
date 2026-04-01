@@ -1,15 +1,10 @@
 package com.ricedotwho.rsm.module.impl.render.opsec;
 
-import com.ricedotwho.rsm.event.impl.game.ClientTickEvent;
 import com.ricedotwho.rsm.module.SubModule;
 import com.ricedotwho.rsm.module.api.SubModuleInfo;
-import com.ricedotwho.rsm.ui.clickgui.settings.impl.BooleanSetting;
-import com.ricedotwho.rsm.ui.clickgui.settings.impl.NumberSetting;
 import com.ricedotwho.rsm.ui.clickgui.settings.impl.StringSetting;
-import com.ricedotwho.rsm.utils.ChatUtils;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;

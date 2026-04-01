@@ -3,7 +3,6 @@ package com.ricedotwho.rsm.utils;
 import com.ricedotwho.rsm.component.impl.location.Location;
 import com.ricedotwho.rsm.data.Pair;
 import com.ricedotwho.rsm.data.Pos;
-import com.ricedotwho.rsm.mixins.accessor.LocalPlayerAccessor;
 import lombok.experimental.UtilityClass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -19,7 +18,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 @UtilityClass
 public class EtherUtils implements Accessor {
