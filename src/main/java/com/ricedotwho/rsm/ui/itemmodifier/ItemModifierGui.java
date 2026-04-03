@@ -48,7 +48,7 @@ public class ItemModifierGui extends Screen implements Accessor {
     private final List<ItemModifierRow> rows = new ArrayList<>();
 
     public ItemModifierGui() {
-        super(Component.literal("RSM Config"));
+        super(Component.literal("Item Modifier"));
         this.maskList = new ArrayList<>();
         this.position = new Vector2d(1920 / 2.0 - WIDTH / 2.0, 1080 / 2.0 - HEIGHT / 2.0);
         reloadRows();
@@ -226,6 +226,12 @@ public class ItemModifierGui extends Screen implements Accessor {
     }
 
     @Override
+    public final boolean mouseReleased(MouseButtonEvent click) {
+        rows.forEach(ItemModifierRow::release);
+        return super.mouseReleased(click);
+    }
+
+    @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double hScroll, double vScroll) {
         float amount = (float) (Math.signum(vScroll) * 20f);
         float totalHeight = rows.size() * 40f;
@@ -283,7 +289,7 @@ public class ItemModifierGui extends Screen implements Accessor {
             return;
         }
 
-        ItemModifierStore.getData().putIfAbsent(uuid, new ItemNameOverride(stack.getHoverName().getString(), true));
+        ItemModifierStore.getData().putIfAbsent(uuid, new ItemNameOverride(stack));
         ItemModifierStore.save();
         reloadRows();
     }

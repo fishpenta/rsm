@@ -3,11 +3,17 @@ package com.ricedotwho.rsm.command.impl.itemmodifier;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.mojang.authlib.minecraft.client.MinecraftClient;
 import com.ricedotwho.rsm.RSM;
+import com.ricedotwho.rsm.data.Colour;
+import com.ricedotwho.rsm.data.adapter.ColourAdapter;
+import com.ricedotwho.rsm.utils.Accessor;
 import com.ricedotwho.rsm.utils.FileUtils;
 import com.ricedotwho.rsm.utils.ItemUtils;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +22,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class ItemModifierStore {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+public final class ItemModifierStore implements Accessor {
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeHierarchyAdapter(Colour.class, new ColourAdapter())
+            .setPrettyPrinting().create();
     private static final Type TYPE = new TypeToken<ConcurrentHashMap<String, ItemNameOverride>>() {}.getType();
     private static final File FILE = FileUtils.getSaveFileInCategory("render", "item_modifiers.json");
 
@@ -32,9 +40,9 @@ public final class ItemModifierStore {
         return DATA;
     }
 
-    public static void put(String uuid, String name) {
+    public static void put(String uuid, String name, Colour colour) {
         ensureLoaded();
-        DATA.put(uuid, new ItemNameOverride(name, true));
+        DATA.put(uuid, new ItemNameOverride(name, true, colour));
         save();
     }
 

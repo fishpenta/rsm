@@ -59,7 +59,7 @@ public class ItemModifierCommand extends Command {
                                         return 1;
                                     }
 
-                                    ItemModifierStore.put(uuid, name);
+                                    ItemModifierStore.put(uuid, name, null);
                                     ChatUtils.chat("Set name for %s", uuid);
                                     return 1;
                                 })
