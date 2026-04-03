@@ -176,7 +176,7 @@ public class ItemModifierRow {
         if ((writingName || writing) && key == GLFW.GLFW_KEY_ESCAPE) {
             if (writing) {
                 colourInput.setValue(value.colour == null ? "" : value.colour.getHex());
-            } else if (writingName) {
+            } else {
                 nameInput.setValue(value.name);
             }
             writingName = false;
@@ -252,21 +252,21 @@ public class ItemModifierRow {
 
             if (expanded) {
                 // ar ar ar fredy faze bear
-                renderStupidFuckingColourThing(mouseX, mouseY, colourX + COLOUR_WIDTH / 2, y + BOX_HEIGHT / 2);
+                //renderStupidFuckingColourThing(mouseX, mouseY, colourX + COLOUR_WIDTH / 2, y + BOX_HEIGHT / 2);
             }
         }
     }
 
     // what's up team
     private void renderStupidFuckingColourThing(double mouseX, double mouseY, float sbX, float sbY) {
-        float bgwidth = BOX_SIZE + (HUE_STRIP_WIDTH * 2) + 24;
+        float bgWidth = BOX_SIZE + (HUE_STRIP_WIDTH * 2) + 24;
         float boxX = sbX + 2; // ??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 
         float hueX = boxX + BOX_SIZE + 10;
         float alphaX = hueX + HUE_STRIP_WIDTH + 10;
         float boxY = sbY + BASE_HEIGHT + 4;
 
-        NVGUtils.drawRect(boxX - 4, boxY - 4, bgwidth + 4, 128, 2, FatalityColours.PANEL);
+        NVGUtils.drawRect(boxX - 4, boxY - 4, bgWidth + 4, 128, 2, FatalityColours.PANEL);
 
         renderOverlay(mouseX, mouseY, sbX, sbY);
 
@@ -301,20 +301,11 @@ public class ItemModifierRow {
         NVGUtils.drawOutlineRect(alphaX, alphaMarkerY - 1, HUE_STRIP_WIDTH, HUE_STRIP_WIDTH / 2f + 1, 1, Colour.WHITE);
         NVGUtils.drawRect(alphaX, alphaMarkerY - 1,  HUE_STRIP_WIDTH - 1, HUE_STRIP_WIDTH / 2f, value.colour);
 
-        float stringX = boxX + (bgwidth - 50) / 2f;
+        float stringX = boxX + (bgWidth - 50) / 2f;
         float stringY = boxY + 106;
 
         boolean hovered = NVGUtils.isHovering(mouseX, mouseY, (int) stringX - 10f, (int) stringY - 2, 65, 18);
-        Colour boxColor;
-        if (writing) {
-            boxColor = new Colour(60, 60, 60);
-        } else if (hovered) {
-            boxColor = new Colour(50, 50, 50);
-        } else {
-            boxColor = new Colour(40, 40, 40);
-        }
-
-        NVGUtils.drawRect(stringX - 10f, stringY - 2, 65f, 18f, 2, boxColor);
+        NVGUtils.drawRect(stringX - 10f, stringY - 2, 65f, 18f, 2, inputColour(writing, hovered));
 
         colourInput.render(stringX, boxY + 108, writing);
     }

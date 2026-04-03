@@ -9,6 +9,7 @@ public class ColourAdapter  implements JsonDeserializer<Colour>, JsonSerializer<
     @Override
     public Colour deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject obj = json.getAsJsonObject();
+        if (!obj.has("hue")) return null;
         short h = obj.get("hue").getAsShort();
         short s = obj.get("saturation").getAsShort();
         short b = obj.get("brightness").getAsShort();
@@ -20,6 +21,8 @@ public class ColourAdapter  implements JsonDeserializer<Colour>, JsonSerializer<
     @Override
     public JsonElement serialize(Colour src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject obj = new JsonObject();
+        // flames yo
+        if (src == null) return obj;
         obj.addProperty("hue", src.getHue());
         obj.addProperty("saturation", src.getSaturation());
         obj.addProperty("brightness", src.getBrightness());
