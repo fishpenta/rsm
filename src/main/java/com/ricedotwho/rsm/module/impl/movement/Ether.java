@@ -1,6 +1,5 @@
 package com.ricedotwho.rsm.module.impl.movement;
 
-
 import com.ricedotwho.rsm.component.impl.Renderer3D;
 import com.ricedotwho.rsm.component.impl.SbStatTracker;
 import com.ricedotwho.rsm.component.impl.camera.CameraHandler;
@@ -279,10 +278,31 @@ public class Ether extends Module implements CameraPositionProvider {
             Pos prediction = EtherUtils.predictTeleport((int) distance, new Pos(renderPos == null ? mc.player.position() : renderPos.asVec3()), yaw,  pitch);
 //            Pos prediction = EtherUtils.predictTeleport(eyePos, yaw,  pitch, distance);
             if (prediction == null) return;
-            renderPos = prediction;
+            Pos target = prediction.subtract(0.0d, 1.0d, 0.0d);
+            target = resolveZptpTarget(target);
+            if (target == null) return;
+            renderPos = target;
             CameraHandler.registerProvider(this);
             zpewSent.add(renderPos.copy());
         }
+    }
+
+    private Pos resolveZptpTarget(Pos target) {
+        if (isSafeZptpTarget(target)) return target;
+
+        Pos above = target.above();
+        return isSafeZptpTarget(above) ? above : null;
+    }
+
+    private boolean isSafeZptpTarget(Pos target) {
+        if (mc.level == null) return false;
+
+        BlockPos feet = target.asBlockPos();
+        if (!mc.level.hasChunk(feet.getX() >> 4, feet.getZ() >> 4)) return false;
+
+        BlockPos head = feet.above();
+        return mc.level.getBlockState(feet).getCollisionShape(mc.level, feet).isEmpty()
+                && mc.level.getBlockState(head).getCollisionShape(mc.level, head).isEmpty();
     }
 
     // timeout stuff
