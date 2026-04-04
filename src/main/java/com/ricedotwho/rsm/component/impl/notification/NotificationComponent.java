@@ -19,6 +19,8 @@ public class NotificationComponent extends ModComponent {
     private static final List<Notification> notifications = new CopyOnWriteArrayList<>();
     private static Image WARNING = null;
     private static Image INFO = null;
+    private static Image CHECK = null;
+    private static Image X = null;
     private static final Easing OPEN_EASING = Easing.OUT_CUBIC;
     private static final Easing CLOSE_EASING = Easing.IN_CUBIC;
     private static final float NOTIFICATION_RADIUS = 6.0f;
@@ -46,6 +48,30 @@ public class NotificationComponent extends ModComponent {
             INFO = NVGUtils.createImage("/assets/rsm/clickgui/info.png");
         }
         return INFO;
+    }
+// thank you cga
+    private Image getCheck() {
+        if (CHECK == null) {
+            CHECK = NVGUtils.createImage("/assets/rsm/clickgui/check.png");
+        }
+        return CHECK;
+    }
+
+    private Image getX() {
+        if (X == null) {
+            X = NVGUtils.createImage("/assets/rsm/clickgui/x.png");
+        }
+        return X;
+    }
+
+    private Image getNotificationIcon(Notification n) {
+        if (n.warning) return getWarning();
+
+        String titleLower = n.title.toLowerCase();
+        if (titleLower.startsWith("enabled ") || titleLower.endsWith(" enabled")) return getCheck();
+        if (titleLower.startsWith("disabled ") || titleLower.endsWith(" disabled")) return getX();
+
+        return getInfo();
     }
 
     @SubscribeEvent
@@ -109,7 +135,7 @@ public class NotificationComponent extends ModComponent {
 
         NVGUtils.drawRect(x, y, fullWidth, 33, NOTIFICATION_RADIUS, new Colour(0, 0, 0, 165));
 
-        Image icon = n.warning ? getWarning() : getInfo();
+        Image icon = getNotificationIcon(n);
         NVGUtils.renderImage(icon, x + 1, y + 1, 32, 32);
 
         NVGUtils.drawText(n.title, x + 33, y + 8, 10, Colour.WHITE, NVGUtils.JOSEFIN_BOLD);
