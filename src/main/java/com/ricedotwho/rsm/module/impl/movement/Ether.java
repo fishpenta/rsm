@@ -94,6 +94,8 @@ public class Ether extends Module implements CameraPositionProvider {
     private final List<Pos> zpewSent = new ArrayList<>();
     private long lastWIMP = 0;
 
+    private static final long WITHER_IMPACT_COOLDOWN_MS = 125L;
+
     private static final List<Class<?>> ignored = List.of(
             HopperBlock.class,
             AnvilBlock.class,
@@ -263,7 +265,8 @@ public class Ether extends Module implements CameraPositionProvider {
         }
 
         boolean sneaking = mc.player.isShiftKeyDown();
-        Vec3 eyePos = (renderPos == null ? mc.player.position() : renderPos.asVec3()).add(0.0d, EtherUtils.getEyeHeight(), 0.0d);
+        Pos currentPos = new Pos(renderPos == null ? mc.player.position() : renderPos.asVec3());
+        Vec3 eyePos = currentPos.asVec3().add(0.0d, EtherUtils.getEyeHeight(), 0.0d);
         if (sneaking && ItemUtils.isEtherwarp(stack) && zpew.getValue()) {
 
             Pair<BlockPos, Boolean> ether = EtherUtils.getEtherPosFromOrigin(eyePos, yaw, pitch, 57 + ItemUtils.getTunerDistance(stack));
@@ -273,17 +276,29 @@ public class Ether extends Module implements CameraPositionProvider {
             CameraHandler.registerProvider(this);
             zpewSent.add(renderPos.copy());
         } else if (!sneaking && zptp.getValue()) {
+            if (isWitherImpactItem(stack) && System.currentTimeMillis() - lastWIMP < WITHER_IMPACT_COOLDOWN_MS) {
+                return;
+            }
+
             float distance = getTpDistance(stack);
             if (distance == 0) return;
-            Pos prediction = EtherUtils.predictTeleport((int) distance, new Pos(renderPos == null ? mc.player.position() : renderPos.asVec3()), yaw,  pitch);
+            Pos prediction = EtherUtils.predictTeleport((int) distance, currentPos, yaw,  pitch);
 //            Pos prediction = EtherUtils.predictTeleport(eyePos, yaw,  pitch, distance);
             if (prediction == null) return;
+
             Pos target = prediction.subtract(0.0d, 1.0d, 0.0d);
             target = resolveZptpTarget(target);
             if (target == null) return;
+            if (isSameTeleportDestination(target, currentPos)) {
+                return;
+            }
             renderPos = target;
             CameraHandler.registerProvider(this);
             zpewSent.add(renderPos.copy());
+
+            if (isWitherImpactItem(stack)) {
+                lastWIMP = System.currentTimeMillis();
+            }
         }
     }
 
@@ -395,22 +410,36 @@ public class Ether extends Module implements CameraPositionProvider {
     }
 
     private int getTpDistance(ItemStack item) {
-        return switch (ItemUtils.getID(item)) {
+        String itemId = ItemUtils.getID(item);
+        if (itemId == null) return 0;
+
+        return switch (itemId) {
             case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> 8 + ItemUtils.getTunerDistance(item);
             case "ASPECT_OF_THE_LEECH_1" -> 3;
             case "ASPECT_OF_THE_LEECH_2" -> 4;
             case "ASPECT_OF_THE_LEECH_3" -> 5;
             case "NECRON_BLADE", "SCYLLA", "HYPERION", "VALKYRIE", "ASTRAEA" -> {
-                if (ItemUtils.getCustomData(item).getListOrEmpty("ability_scroll").size() == 3) {
-                    int d = (System.currentTimeMillis() - lastWIMP) < 125 ? 10 : 0;
-                    lastWIMP = System.currentTimeMillis();
-                    yield d;
-                } else {
+                boolean hasWitherImpact = ItemUtils.getCustomData(item).getListOrEmpty("ability_scroll").size() == 3;
+                if (!hasWitherImpact) {
                     yield 0;
                 }
+                yield 10;
             }
-            case null, default -> 0;
+            default -> 0;
         };
+    }
+
+    private boolean isWitherImpactItem(ItemStack item) {
+        String itemId = ItemUtils.getID(item);
+        if (!Utils.equalsOneOf(itemId, "NECRON_BLADE", "SCYLLA", "HYPERION", "VALKYRIE", "ASTRAEA")) {
+            return false;
+        }
+
+        return ItemUtils.getCustomData(item).getListOrEmpty("ability_scroll").size() == 3;
+    }
+
+    private boolean isSameTeleportDestination(Pos target, Pos currentPos) {
+        return target.asBlockPos().equals(currentPos.asBlockPos());
     }
 
     private boolean isIgnored(Block block) {
