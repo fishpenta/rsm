@@ -127,6 +127,7 @@ public class RSM implements ClientModInitializer {
             DevCommand.class,
             VisualWordCommand.class,
             ItemModifierCommand.class,
+            TerminalSimCommand.class,
             ImageHudCommand.class,
             KeyShortcutCommand.class,
             PosMsgCommand.class,

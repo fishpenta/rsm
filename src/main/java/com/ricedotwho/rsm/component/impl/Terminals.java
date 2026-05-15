@@ -109,6 +109,22 @@ public class Terminals extends ModComponent {
         first = 0;
     }
 
+    public static void startSimulatorTiming() {
+        clickedAt = 0;
+        first = 0;
+        clicks.clear();
+    }
+
+    public static void registerSimulatorClick() {
+        long now = System.currentTimeMillis();
+        if (first == 0) {
+            first = now;
+        } else {
+            clicks.add(now - clickedAt);
+        }
+        clickedAt = now;
+    }
+
     @SubscribeEvent
     public void onLoad(WorldEvent.Load event) {
         reset();

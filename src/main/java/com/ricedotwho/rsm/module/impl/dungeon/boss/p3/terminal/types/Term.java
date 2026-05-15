@@ -7,6 +7,7 @@ import com.ricedotwho.rsm.data.Pair;
 import com.ricedotwho.rsm.data.TerminalType;
 import com.ricedotwho.rsm.module.impl.dungeon.boss.p3.terminal.TermSol;
 import com.ricedotwho.rsm.module.impl.dungeon.boss.p3.terminal.TerminalSolver;
+import com.ricedotwho.rsm.ui.termsim.TerminalSimScreen;
 import com.ricedotwho.rsm.utils.Accessor;
 import com.ricedotwho.rsm.utils.ChatUtils;
 import com.ricedotwho.rsm.utils.MouseUtils;
@@ -137,6 +138,11 @@ public abstract class Term implements Accessor {
     }
 
     protected void click(int slot, int button) {
+        if (mc.screen instanceof TerminalSimScreen simulator) {
+            simulator.handleSolverClick(slot, button);
+            return;
+        }
+
         if (mc.player == null || mc.gameMode == null) return;
         AbstractContainerMenu menu = mc.player.containerMenu;
         int wid = menu.containerId;
